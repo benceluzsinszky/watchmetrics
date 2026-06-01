@@ -1,0 +1,33 @@
+---
+description: Thymeleaf, HTMX, and Tailwind frontend conventions
+globs: "**/*.{html,css,js}"
+alwaysApply: false
+---
+
+# Frontend
+
+## Stack
+
+- **Templates**: `src/main/resources/templates/` (Thymeleaf)
+- **CSS**: Tailwind v4 — source at `src/main/frontend/styles/input.css`, output to `src/main/resources/static/css/app.css`
+- **HTMX**: loaded from CDN in page `<head>`; use for partial page updates
+
+## Tailwind
+
+```bash
+npm run watch:css   # dev — rebuild on change
+npm run build:css   # prod — minified output
+```
+
+Run `watch:css` alongside `./gradlew bootRun` during UI work.
+
+## HTMX patterns
+
+- Return HTML fragments from dedicated endpoints; swap with `hx-get`, `hx-target`, `hx-swap`
+- Keep fragments in `templates/fragments/`
+- Use `th:fragment` for reusable pieces
+
+## Styling
+
+- Dark-first UI (slate palette); utility classes only — no custom CSS unless necessary
+- Mobile-responsive by default (`max-w-*`, `px-*`, flex/grid)

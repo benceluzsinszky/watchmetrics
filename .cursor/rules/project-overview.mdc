@@ -1,0 +1,36 @@
+---
+description: Watchmetrics domain, stack, and current project state
+alwaysApply: true
+---
+
+# Watchmetrics
+
+TV series analytics web app: search a show and see how ratings evolved episode-by-episode across IMDb, Rotten Tomatoes, and Metacritic.
+
+## Stack
+
+- **Backend**: Kotlin, Spring Boot 3, Gradle (Kotlin DSL)
+- **Frontend**: Thymeleaf templates, HTMX, Tailwind CSS v4
+- **Package**: `com.watchmetrics`
+
+## Architecture (planned)
+
+- Server-rendered pages with HTMX partial updates — no SPA framework
+- External rating APIs / scrapers behind a service layer (not yet implemented)
+- Charts and episode timelines added incrementally
+
+## Current state
+
+- [x] Project scaffold (Spring Boot, Thymeleaf, HTMX CDN, Tailwind build)
+- [x] Home page placeholder at `/`
+- [ ] Series search
+- [ ] Rating data ingestion (IMDb / RT / Metacritic)
+- [ ] Episode evolution charts
+
+Update the checklist above as features land.
+
+## Conventions
+
+- Keep diffs small; match existing patterns before introducing new abstractions
+- Prefer server-side rendering + HTMX over client-side JS frameworks
+- Do not commit secrets (API keys go in env vars or local config, never in git)

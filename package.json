@@ -1,0 +1,12 @@
+{
+  "name": "watchmetrics-frontend",
+  "private": true,
+  "scripts": {
+    "build:css": "tailwindcss -i ./src/main/frontend/styles/input.css -o ./src/main/resources/static/css/app.css --minify",
+    "watch:css": "tailwindcss -i ./src/main/frontend/styles/input.css -o ./src/main/resources/static/css/app.css --watch"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.1.4",
+    "tailwindcss": "^4.1.4"
+  }
+}

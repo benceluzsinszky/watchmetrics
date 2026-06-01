@@ -1,0 +1,26 @@
+---
+description: External rating data sources and integration notes
+globs: "**/client/**,**/service/**"
+alwaysApply: false
+---
+
+# Rating data sources
+
+Target platforms: **IMDb**, **Rotten Tomatoes**, **Metacritic**.
+
+## Status
+
+Not yet integrated — update this file as APIs/clients are added.
+
+## Planned approach
+
+- Isolate each source behind a client interface in `client/`
+- Normalize scores into a common episode-level model in `model/`
+- Cache responses to avoid hammering external services
+- Document rate limits, auth requirements, and ToS constraints here when known
+
+## Open questions
+
+- Which APIs or data providers are available (official vs third-party)?
+- Episode-level granularity per source?
+- Search: by title, IMDB ID, or external catalog ID?

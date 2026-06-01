@@ -1,0 +1,39 @@
+---
+description: Kotlin and Spring Boot conventions for Watchmetrics
+globs: "**/*.{kt,kts}"
+alwaysApply: false
+---
+
+# Kotlin / Spring Boot
+
+## Layout
+
+```
+src/main/kotlin/com/watchmetrics/
+  WatchmetricsApplication.kt
+  web/          # @Controller — Thymeleaf views
+  service/      # business logic
+  client/       # external API clients (IMDb, RT, Metacritic)
+  model/        # domain types
+```
+
+## Patterns
+
+- Use `@Controller` + Thymeleaf for pages; reserve `@RestController` for HTMX fragment endpoints or JSON APIs
+- Constructor injection only; no field `@Autowired`
+- Data classes for immutable domain models
+- Configuration via `application.yml`; secrets via environment variables
+
+## Example controller
+
+```kotlin
+@Controller
+class SeriesController(private val seriesService: SeriesService) {
+
+    @GetMapping("/series/{id}")
+    fun show(@PathVariable id: String, model: Model): String {
+        model.addAttribute("series", seriesService.findById(id))
+        return "series/detail"
+    }
+}
+```

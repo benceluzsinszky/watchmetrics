@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: watchmetrics
+  thymeleaf:
+    cache: false
+
+server:
+  port: 8080
