@@ -44,7 +44,7 @@
 
     <section th:if="${series.ratingGrid.maxEpisodes > 0}" class="mt-12">
         <h2 class="text-xl font-semibold">Rating heatmap</h2>
-        <p class="mt-1 text-sm text-slate-500">IMDb score by season and episode. Red = lower, green = higher.</p>
+        <p class="mt-1 text-sm text-slate-500">IMDb score by season and episode. 5 is red; below 5 turns muddy fast. 8+ leans green.</p>
 
         <div class="mt-6 overflow-x-auto rounded-xl border border-slate-800 bg-slate-900/40 p-4">
             <div class="inline-grid gap-1"
@@ -70,10 +70,10 @@
         </div>
 
         <div class="mt-3 flex flex-wrap items-center gap-3 text-xs text-slate-500">
-            <span>Low</span>
-            <div class="h-3 w-32 rounded-full bg-linear-to-r from-red-700 via-amber-500 to-emerald-500"></div>
-            <span>High</span>
-            <span class="text-slate-600">Hover a cell for episode details</span>
+            <span>1</span>
+            <div class="h-3 w-40 rounded-full bg-linear-to-r from-stone-950 via-purple-950 via-red-800 via-red-600 via-amber-500 to-emerald-500"></div>
+            <span>10</span>
+            <span class="text-slate-600">5 = red · hover for details</span>
         </div>
     </section>
 
