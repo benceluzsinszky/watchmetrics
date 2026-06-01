@@ -142,6 +142,35 @@ class SeriesDetailServiceTest {
     }
 
     @Test
+    fun `lists specials after numbered seasons`() {
+        given(tmdbClient.getTvShow(1396)).willReturn(
+            TmdbTvShowDetail(
+                id = 1396,
+                name = "Breaking Bad",
+                seasons = listOf(
+                    TmdbSeasonRef(seasonNumber = 0, name = "Specials", episodeCount = 1),
+                    TmdbSeasonRef(seasonNumber = 2, name = "Season 2", episodeCount = 1),
+                    TmdbSeasonRef(seasonNumber = 1, name = "Season 1", episodeCount = 1),
+                ),
+            ),
+        )
+        given(tmdbClient.getTvExternalIds(1396)).willReturn(TmdbExternalIds(imdbId = null))
+        given(tmdbClient.getTvSeason(1396, 0)).willReturn(
+            TmdbSeasonDetail(seasonNumber = 0, episodes = listOf(TmdbEpisode(1, "Special"))),
+        )
+        given(tmdbClient.getTvSeason(1396, 1)).willReturn(
+            TmdbSeasonDetail(seasonNumber = 1, episodes = listOf(TmdbEpisode(1, "Pilot"))),
+        )
+        given(tmdbClient.getTvSeason(1396, 2)).willReturn(
+            TmdbSeasonDetail(seasonNumber = 2, episodes = listOf(TmdbEpisode(1, "Seven Thirty-Seven"))),
+        )
+
+        val seasonNumbers = seriesDetailService.getDetail(1396).seasons.map { it.number }
+
+        assertEquals(listOf(1, 2, 0), seasonNumbers)
+    }
+
+    @Test
     fun `maps 404 to not found`() {
         given(tmdbClient.getTvShow(999)).willThrow(
             RestClientResponseException("Not found", 404, "Not Found", null, null, null),

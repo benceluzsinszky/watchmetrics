@@ -27,7 +27,7 @@ class SeriesDetailService(
 
             val seasons = show.seasons
                 .filter { it.episodeCount > 0 }
-                .sortedBy { it.seasonNumber }
+                .sortedBy { seasonSortKey(it.seasonNumber) }
                 .map { seasonRef ->
                     val season = tmdbClient.getTvSeason(tmdbId, seasonRef.seasonNumber)
                     val omdbRatingsByEpisode = imdbId
@@ -85,6 +85,9 @@ class SeriesDetailService(
 
     private fun defaultSeasonName(seasonNumber: Int): String =
         if (seasonNumber == 0) "Specials" else "Season $seasonNumber"
+
+    private fun seasonSortKey(seasonNumber: Int): Int =
+        if (seasonNumber == 0) Int.MAX_VALUE else seasonNumber
 
     private fun resolveSeriesImdbRating(omdbShowRating: String?, seasons: List<SeasonView>): Double? {
         OmdbParsing.parseRating(omdbShowRating)?.let { return it }
