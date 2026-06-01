@@ -42,6 +42,97 @@
         </div>
     </header>
 
+    <section th:if="${series.highlights.hasData}" class="mt-12">
+        <h2 class="text-xl font-semibold">Highlights</h2>
+        <p class="mt-1 text-sm text-slate-500">Finale, peaks, and lows from IMDb-rated episodes. Specials excluded.</p>
+
+        <div class="mt-6 grid gap-4 lg:grid-cols-3">
+            <div th:if="${series.highlights.finale != null}"
+                 class="rounded-xl border border-slate-800 bg-slate-900/40 p-4">
+                <h3 class="text-sm font-medium text-slate-300">How it ended</h3>
+                <dl class="mt-4 space-y-4">
+                    <div>
+                        <dt class="text-xs text-slate-500">Final season · <span th:text="${series.highlights.finale.lastSeasonName}">Season 8</span></dt>
+                        <dd class="mt-1 text-lg font-semibold tabular-nums text-amber-400/90"
+                            th:classappend="${series.highlights.finale.lastSeasonAverage == null} ? 'text-slate-600'"
+                            th:text="${series.highlights.finale.lastSeasonAverage != null} ? ${'★ ' + #numbers.formatDecimal(series.highlights.finale.lastSeasonAverage, 1, 1) + ' avg IMDb'} : '— avg IMDb'">
+                            ★ 8.7 avg IMDb
+                        </dd>
+                    </div>
+                    <div>
+                        <dt class="text-xs text-slate-500">
+                            Final episode ·
+                            <span th:text="${'E' + series.highlights.finale.lastEpisodeNumber + ' ' + series.highlights.finale.lastEpisodeName}">E6 Finale</span>
+                        </dt>
+                        <dd class="mt-1 text-lg font-semibold tabular-nums text-amber-400/90"
+                            th:classappend="${series.highlights.finale.lastEpisodeRating == null} ? 'text-slate-600'"
+                            th:text="${series.highlights.finale.lastEpisodeRating != null} ? ${'★ ' + #numbers.formatDecimal(series.highlights.finale.lastEpisodeRating, 1, 1) + ' IMDb'} : '— IMDb'">
+                            ★ 6.4 IMDb
+                        </dd>
+                    </div>
+                </dl>
+            </div>
+
+            <div class="rounded-xl border border-slate-800 bg-slate-900/40 p-4">
+                <h3 class="text-sm font-medium text-emerald-400/90">Best</h3>
+                <dl class="mt-4 space-y-4">
+                    <div th:if="${series.highlights.bestSeason != null}">
+                        <dt class="text-xs text-slate-500">Season · <span th:text="${series.highlights.bestSeason.seasonName}">Season 4</span></dt>
+                        <dd class="mt-1 text-lg font-semibold tabular-nums text-emerald-400/90"
+                            th:text="${'★ ' + #numbers.formatDecimal(series.highlights.bestSeason.averageRating, 1, 1) + ' avg IMDb'}">
+                            ★ 9.2 avg IMDb
+                        </dd>
+                    </div>
+                    <div th:if="${series.highlights.bestSeason == null}">
+                        <p class="text-sm text-slate-600">No rated seasons.</p>
+                    </div>
+                    <div th:if="${series.highlights.bestEpisode != null}">
+                        <dt class="text-xs text-slate-500">
+                            Episode ·
+                            <span th:text="${series.highlights.bestEpisode.code + ' ' + series.highlights.bestEpisode.episodeName}">S2E9 Blackwater</span>
+                        </dt>
+                        <dd class="mt-1 text-lg font-semibold tabular-nums text-emerald-400/90"
+                            th:text="${'★ ' + #numbers.formatDecimal(series.highlights.bestEpisode.imdbRating, 1, 1) + ' IMDb'}">
+                            ★ 9.7 IMDb
+                        </dd>
+                    </div>
+                    <div th:if="${series.highlights.bestEpisode == null}">
+                        <p class="text-sm text-slate-600">No rated episodes.</p>
+                    </div>
+                </dl>
+            </div>
+
+            <div class="rounded-xl border border-slate-800 bg-slate-900/40 p-4">
+                <h3 class="text-sm font-medium text-red-400/90">Worst</h3>
+                <dl class="mt-4 space-y-4">
+                    <div th:if="${series.highlights.worstSeason != null}">
+                        <dt class="text-xs text-slate-500">Season · <span th:text="${series.highlights.worstSeason.seasonName}">Season 8</span></dt>
+                        <dd class="mt-1 text-lg font-semibold tabular-nums text-red-400/90"
+                            th:text="${'★ ' + #numbers.formatDecimal(series.highlights.worstSeason.averageRating, 1, 1) + ' avg IMDb'}">
+                            ★ 6.4 avg IMDb
+                        </dd>
+                    </div>
+                    <div th:if="${series.highlights.worstSeason == null}">
+                        <p class="text-sm text-slate-600">No rated seasons.</p>
+                    </div>
+                    <div th:if="${series.highlights.worstEpisode != null}">
+                        <dt class="text-xs text-slate-500">
+                            Episode ·
+                            <span th:text="${series.highlights.worstEpisode.code + ' ' + series.highlights.worstEpisode.episodeName}">S8E6 Finale</span>
+                        </dt>
+                        <dd class="mt-1 text-lg font-semibold tabular-nums text-red-400/90"
+                            th:text="${'★ ' + #numbers.formatDecimal(series.highlights.worstEpisode.imdbRating, 1, 1) + ' IMDb'}">
+                            ★ 4.0 IMDb
+                        </dd>
+                    </div>
+                    <div th:if="${series.highlights.worstEpisode == null}">
+                        <p class="text-sm text-slate-600">No rated episodes.</p>
+                    </div>
+                </dl>
+            </div>
+        </div>
+    </section>
+
     <section th:if="${series.ratingGrid.maxEpisodes > 0}" class="mt-12">
         <h2 class="text-xl font-semibold">Rating heatmap</h2>
         <p class="mt-1 text-sm text-slate-500">IMDb score by season and episode. 5 is red; below 5 turns muddy fast. 8+ leans green.</p>

@@ -6,6 +6,7 @@ import com.watchmetrics.model.EpisodeView
 import com.watchmetrics.model.OmdbParsing
 import com.watchmetrics.model.RatingGridBuilder
 import com.watchmetrics.model.SeasonRatingChartBuilder
+import com.watchmetrics.model.SeriesHighlightsBuilder
 import com.watchmetrics.model.SeasonView
 import com.watchmetrics.model.SeriesDetailView
 import org.springframework.stereotype.Service
@@ -76,6 +77,7 @@ class SeriesDetailService(
                 seasons = seasons,
                 ratingGrid = RatingGridBuilder.build(seasons),
                 seasonRatingChart = SeasonRatingChartBuilder.build(seasons),
+                highlights = SeriesHighlightsBuilder.build(seasons),
             )
         } catch (ex: RestClientResponseException) {
             if (ex.statusCode.value() == 404) {

@@ -12,6 +12,7 @@ data class SeriesDetailView(
     val seasons: List<SeasonView>,
     val ratingGrid: RatingGridView,
     val seasonRatingChart: SeasonRatingChartView,
+    val highlights: SeriesHighlightsView,
 )
 
 data class SeasonView(

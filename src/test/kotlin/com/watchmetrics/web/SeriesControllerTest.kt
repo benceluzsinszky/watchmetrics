@@ -3,6 +3,7 @@ package com.watchmetrics.web
 import com.watchmetrics.model.EpisodeView
 import com.watchmetrics.model.RatingGridBuilder
 import com.watchmetrics.model.SeasonRatingChartBuilder
+import com.watchmetrics.model.SeriesHighlightsBuilder
 import com.watchmetrics.model.SeasonView
 import com.watchmetrics.model.SeriesDetailView
 import com.watchmetrics.service.SeriesDetailService
@@ -50,6 +51,7 @@ class SeriesControllerTest {
                 seasons = seasons,
                 ratingGrid = RatingGridBuilder.build(seasons),
                 seasonRatingChart = SeasonRatingChartBuilder.build(seasons),
+                highlights = SeriesHighlightsBuilder.build(seasons),
             ),
         )
 
@@ -58,7 +60,8 @@ class SeriesControllerTest {
             view { name("series/detail") }
             content { string(org.hamcrest.Matchers.containsString("Breaking Bad")) }
             content { string(org.hamcrest.Matchers.containsString("Pilot")) }
-            content { string(org.hamcrest.Matchers.containsString("Season averages")) }
+            content { string(org.hamcrest.Matchers.containsString("Highlights")) }
+            content { string(org.hamcrest.Matchers.containsString("How it ended")) }
             content { string(org.hamcrest.Matchers.containsString("Rating heatmap")) }
             content { string(org.hamcrest.Matchers.containsString("Episodes by season")) }
         }
