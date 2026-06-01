@@ -19,7 +19,7 @@ npm run watch:css   # dev — rebuild on change
 npm run build:css   # prod — minified output
 ```
 
-Run `watch:css` alongside `./gradlew bootRun` during UI work. For Kotlin hot restart, also run `./gradlew compileKotlin --continuous` (see README).
+Run `npm run dev` for local hot reload (CSS + Kotlin + Spring Boot). Or manually: `watch:css` + `compileKotlin --continuous` + `bootRun`.
 
 ## HTMX patterns
 

@@ -31,33 +31,25 @@ npm run build:css
 
 Open [http://localhost:8080](http://localhost:8080).
 
-### Hot reload while developing
+### Development (hot reload)
 
-Use **three terminals** (restart `bootRun` once after adding DevTools):
+One command starts everything — Tailwind CSS watch, Kotlin recompile, and Spring Boot with DevTools:
 
 ```bash
-# Terminal 1 — Tailwind rebuilds CSS on change
-npm run watch:css
-
-# Terminal 2 — Spring Boot app
-./gradlew bootRun
-
-# Terminal 3 — recompiles Kotlin when you save; DevTools restarts the app (~1–2s)
-./gradlew compileKotlin --continuous
+npm run dev
+# or
+./scripts/dev.sh
 ```
 
-What picks up automatically:
+Stop with **Ctrl+C** (shuts down all processes).
 
-| Change | How it reloads |
-|--------|----------------|
-| `.kt` files | Terminal 3 recompiles → DevTools fast restart |
-| Thymeleaf HTML | DevTools restart (templates not cached in dev) |
-| Tailwind / CSS source | Terminal 1 writes `app.css` → refresh browser |
-| `application.yml` | DevTools restart |
+| Change | Reload |
+|--------|--------|
+| `.kt` files | Kotlin recompiles → DevTools restarts app (~1–2s) |
+| Thymeleaf HTML | DevTools restart |
+| Tailwind / CSS | `app.css` rebuilds → refresh browser |
 
-Optional: install the [LiveReload browser extension](https://chromewebstore.google.com/detail/livereload/jnihajbhpnppcggbcgedagnkighmdlei) and DevTools will refresh the tab after a restart.
-
-If you use IntelliJ/Cursor run configs instead of Gradle, enable **Build project automatically** so Kotlin recompiles on save; keep `bootRun` in a terminal or use the IDE run configuration with DevTools on the classpath.
+Optional: [LiveReload browser extension](https://chromewebstore.google.com/detail/livereload/jnihajbhpnppcggbcgedagnkighmdlei) auto-refreshes after backend restarts.
 
 ## Project layout
 
