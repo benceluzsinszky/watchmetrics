@@ -24,9 +24,15 @@
             <h1 class="text-3xl font-bold tracking-tight" th:text="${series.name}">Series name</h1>
             <div class="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-slate-400">
                 <span th:if="${series.firstAirYear != null}" th:text="${series.firstAirYear}">2008</span>
-                <span th:if="${series.voteAverage != null}"
-                      class="text-amber-400/90"
-                      th:text="${'★ ' + #numbers.formatDecimal(series.voteAverage, 1, 1) + ' TMDB'}">★ 8.9 TMDB</span>
+                <span class="text-amber-400/90"
+                      th:classappend="${series.imdbRating == null} ? 'text-slate-600'"
+                      th:text="${series.imdbRating != null} ? ${'★ ' + #numbers.formatDecimal(series.imdbRating, 1, 1) + ' IMDb'} : '— IMDb'">★ 8.9 IMDb</span>
+                <span th:if="${series.rottenTomatoesScore != null}"
+                      class="text-red-400/90"
+                      th:text="${series.rottenTomatoesScore + '% RT'}">96% RT</span>
+                <span th:if="${series.metacriticScore != null}"
+                      class="text-emerald-400/90"
+                      th:text="${series.metacriticScore + ' Metacritic'}">96 Metacritic</span>
             </div>
             <p th:if="${series.overview != null and !#strings.isEmpty(series.overview)}"
                class="mt-4 text-slate-300 leading-relaxed"
@@ -38,7 +44,7 @@
 
     <section class="mt-12">
         <h2 class="text-xl font-semibold">Episodes by season</h2>
-        <p class="mt-1 text-sm text-slate-500">TMDB user score per episode (0–10). IMDb, Rotten Tomatoes, and Metacritic coming later.</p>
+        <p class="mt-1 text-sm text-slate-500">IMDb rating per episode. Show-level Rotten Tomatoes and Metacritic when OMDb has them.</p>
 
         <p th:if="${#lists.isEmpty(series.seasons)}"
            class="mt-6 rounded-lg border border-slate-800 bg-slate-900/50 px-4 py-6 text-center text-slate-400">
@@ -72,9 +78,9 @@
                                th:text="${episode.airDate}">2008-01-20</p>
                         </div>
                         <p class="shrink-0 text-sm font-medium tabular-nums"
-                           th:classappend="${episode.hasRating} ? 'text-amber-400/90' : 'text-slate-600'"
-                           th:text="${episode.hasRating} ? ${'★ ' + #numbers.formatDecimal(episode.rating, 1, 1)} : '—'">
-                            ★ 8.5
+                           th:classappend="${episode.hasImdbRating} ? 'text-amber-400/90' : 'text-slate-600'"
+                           th:text="${episode.hasImdbRating} ? ${'★ ' + #numbers.formatDecimal(episode.imdbRating, 1, 1) + ' IMDb'} : '— IMDb'">
+                            ★ 8.5 IMDb
                         </p>
                     </li>
                 </ul>

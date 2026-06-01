@@ -13,6 +13,7 @@ A web app for exploring TV series ratings and analytics — search any show and 
 - **JDK 21** — [Eclipse Temurin](https://adoptium.net/) or similar
 - **Node.js 20+** and npm — for Tailwind CSS build
 - **TMDB API credentials** — copy `.env.example` to `.env` and fill in your keys from [themoviedb.org/settings/api](https://www.themoviedb.org/settings/api)
+- **OMDb API key** (optional but recommended) — free key from [omdbapi.com/apikey.aspx](https://www.omdbapi.com/apikey.aspx) for IMDb episode ratings
 
 ## Run locally
 
@@ -42,6 +43,8 @@ npm run dev
 ```
 
 Stop with **Ctrl+C** (shuts down all processes).
+
+After changing `.env`, restart dev completely — Spring DevTools hot reload does **not** pick up new environment variables.
 
 | Change | Reload |
 |--------|--------|

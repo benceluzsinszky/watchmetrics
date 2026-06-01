@@ -16,3 +16,7 @@ tmdb:
   api-key: ${TMDB_API_KEY:}
   access-token: ${TMDB_ACCESS_TOKEN:}
   base-url: https://api.themoviedb.org/3
+
+omdb:
+  api-key: ${OMDB_API_KEY:}
+  base-url: https://www.omdbapi.com

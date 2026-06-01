@@ -33,13 +33,15 @@ class SeriesControllerTest {
                 overview = "A chemistry teacher.",
                 posterUrl = "https://image.tmdb.org/t/p/w342/poster.jpg",
                 firstAirYear = "2008",
-                voteAverage = 8.9,
+                imdbRating = 9.5,
+                rottenTomatoesScore = 96,
+                metacriticScore = null,
                 seasons = listOf(
                     SeasonView(
                         number = 1,
                         name = "Season 1",
                         episodes = listOf(
-                            EpisodeView(1, "Pilot", null, 8.5, "2008-01-20"),
+                            EpisodeView(1, "Pilot", null, 7.9, "2008-01-20"),
                         ),
                     ),
                 ),

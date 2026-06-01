@@ -1,9 +1,11 @@
 package com.watchmetrics.client
 
 import com.watchmetrics.config.TmdbProperties
+import com.watchmetrics.model.TmdbExternalIds
 import com.watchmetrics.model.TmdbSeasonDetail
 import com.watchmetrics.model.TmdbTvSearchResponse
 import com.watchmetrics.model.TmdbTvShowDetail
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Component
 import org.springframework.web.client.RestClient
 import org.springframework.web.client.requiredBody
@@ -12,7 +14,7 @@ import java.net.URI
 
 @Component
 class TmdbClient(
-    private val tmdbRestClient: RestClient,
+    @Qualifier("tmdbRestClient") private val tmdbRestClient: RestClient,
     private val properties: TmdbProperties,
 ) {
 
@@ -47,6 +49,15 @@ class TmdbClient(
             .uri { builder -> authUri(builder, "/tv/$showId/season/$seasonNumber") }
             .retrieve()
             .requiredBody<TmdbSeasonDetail>()
+    }
+
+    fun getTvExternalIds(id: Int): TmdbExternalIds {
+        requireConfigured()
+
+        return tmdbRestClient.get()
+            .uri { builder -> authUri(builder, "/tv/$id/external_ids") }
+            .retrieve()
+            .requiredBody<TmdbExternalIds>()
     }
 
     private fun requireConfigured() {

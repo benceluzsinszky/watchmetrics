@@ -58,4 +58,12 @@ tasks.named<org.springframework.boot.gradle.tasks.run.BootRun>("bootRun") {
                 environment(line.substring(0, separator).trim(), line.substring(separator + 1).trim())
             }
     }
+
+    doFirst {
+        logger.lifecycle(
+            "bootRun env: TMDB token={}, OMDB key={}",
+            if (environment.containsKey("TMDB_ACCESS_TOKEN")) "set" else "missing",
+            if (environment.containsKey("OMDB_API_KEY")) "set" else "missing",
+        )
+    }
 }

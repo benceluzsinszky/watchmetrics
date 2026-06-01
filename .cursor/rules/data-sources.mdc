@@ -6,27 +6,29 @@ alwaysApply: false
 
 # Rating data sources
 
-Target platforms: **IMDb**, **Rotten Tomatoes**, **Metacritic**.
-
 ## Catalog (search & metadata)
 
-**TMDB** — integrated for TV search and show metadata.
+**TMDB** — TV search, posters, seasons/episodes, IMDb ID via `external_ids`.
 
-- Env vars: `TMDB_ACCESS_TOKEN` (Bearer, preferred), `TMDB_API_KEY` (v3 fallback query param)
-- Client: `client/TmdbClient.kt` — `searchTv`, `getTvShow`, `getTvSeason`
-- Detail flow: `SeriesDetailService` loads show + each season's episodes (TMDB `vote_average` per episode)
-- Config: `config/TmdbProperties.kt`, loaded from `.env` via `bootRun` or environment
-- Search endpoint: `GET /3/search/tv`
+- Env: `TMDB_ACCESS_TOKEN`, `TMDB_API_KEY`
+- Client: `TmdbClient`
 
-## Rating sources (not yet integrated)
+## Ratings
 
-- IMDb — link via TMDB `external_ids`; episode ratings TBD
-- Rotten Tomatoes — TBD
-- Metacritic — TBD
+**OMDb** — IMDb episode ratings + show-level IMDb / RT / Metacritic when available.
+
+- Env: `OMDB_API_KEY`
+- Client: `OmdbClient` — `getTitle(imdbId)`, `getSeason(imdbId, seasonNumber)`
+- Flow: TMDB `external_ids.imdb_id` → OMDb season calls (1 per season)
+- Free tier: ~1,000 requests/day — cache in DB before scaling traffic
+
+Episode display prefers **IMDb only**; show `— IMDb` when unavailable (no TMDB fallback in UI).
+
+## Not yet integrated
+
+- Episode-level Rotten Tomatoes / Metacritic (rarely available via OMDb)
 
 ## Conventions
 
 - Isolate each source behind a client in `client/`
-- Normalize scores into a common episode-level model in `model/`
-- Cache responses in DB once a show is selected (not yet implemented)
 - Never commit API keys — use `.env` locally

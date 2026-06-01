@@ -6,7 +6,9 @@ data class SeriesDetailView(
     val overview: String?,
     val posterUrl: String?,
     val firstAirYear: String?,
-    val voteAverage: Double?,
+    val imdbRating: Double?,
+    val rottenTomatoesScore: Int?,
+    val metacriticScore: Int?,
     val seasons: List<SeasonView>,
 )
 
@@ -20,9 +22,9 @@ data class EpisodeView(
     val number: Int,
     val name: String,
     val overview: String?,
-    val rating: Double?,
+    val imdbRating: Double?,
     val airDate: String?,
 ) {
-    val hasRating: Boolean
-        get() = rating != null && rating > 0
+    val hasImdbRating: Boolean
+        get() = imdbRating != null && imdbRating > 0
 }

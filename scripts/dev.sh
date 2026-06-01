@@ -29,7 +29,12 @@ if [[ ! -d node_modules ]]; then
 fi
 
 if [[ ! -f .env ]]; then
-  warn ".env not found — copy .env.example and add TMDB credentials for search."
+  warn ".env not found — copy .env.example and add TMDB/OMDb credentials."
+else
+  set -a
+  # shellcheck disable=SC1091
+  source .env
+  set +a
 fi
 
 log "Building CSS once..."
