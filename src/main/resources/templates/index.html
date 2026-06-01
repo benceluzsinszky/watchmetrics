@@ -25,11 +25,13 @@
                    placeholder="Search TV series…"
                    autocomplete="off"
                    autofocus
+                   th:value="${query}"
                    class="w-full rounded-xl border border-slate-700 bg-slate-900 px-4 py-3 pr-12 text-slate-100 placeholder:text-slate-500 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-500/40"
-                   hx-get="/search"
+                   hx-get="/"
                    hx-trigger="input changed delay:300ms"
                    hx-target="#search-results"
-                   hx-indicator="#search-spinner"/>
+                   hx-indicator="#search-spinner"
+                   hx-replace-url="true"/>
             <div id="search-spinner" class="htmx-indicator absolute inset-y-0 right-4 flex items-center">
                 <svg class="h-5 w-5 animate-spin text-slate-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-hidden="true">
                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>

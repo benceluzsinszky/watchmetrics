@@ -24,6 +24,8 @@ Run `npm run dev` for local hot reload (CSS + Kotlin + Spring Boot). Or manually
 ## HTMX patterns
 
 - Return HTML fragments from dedicated endpoints; swap with `hx-get`, `hx-target`, `hx-swap`
+- Search uses `GET /?q=...` — full page on direct load, fragment when `HX-Request` header is set
+- Use `hx-replace-url="true"` on search input so the URL updates without cluttering browser history
 - Keep fragments in `templates/fragments/`
 - Use `th:fragment` for reusable pieces
 
