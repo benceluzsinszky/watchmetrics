@@ -8,6 +8,7 @@ COPY package.json package-lock.json ./
 RUN npm ci
 
 COPY src/main/frontend ./src/main/frontend
+COPY src/main/resources/templates ./src/main/resources/templates
 RUN npm run build:css
 
 FROM eclipse-temurin:21-jdk-alpine AS build
