@@ -1,4 +1,3 @@
-# Replace with your real hostname before deploying, e.g. watchmetrics.example.com
 watchmetrics.benceluzsinszky.com {
 	reverse_proxy watchmetrics:8080
 }
