@@ -1,7 +1,8 @@
 package com.watchmetrics.web
 
-import com.watchmetrics.model.TmdbTvSearchResponse
-import com.watchmetrics.model.TmdbTvShowSummary
+import com.watchmetrics.model.FinaleVerdictResult
+import com.watchmetrics.model.SeriesSearchPageView
+import com.watchmetrics.model.SeriesSearchResultView
 import com.watchmetrics.service.SeriesSearchService
 import org.junit.jupiter.api.Test
 import org.mockito.BDDMockito.given
@@ -25,8 +26,20 @@ class HomeControllerTest {
     @Test
     fun `htmx request returns search fragment`() {
         given(seriesSearchService.search("breaking bad")).willReturn(
-            TmdbTvSearchResponse(
-                results = listOf(TmdbTvShowSummary(id = 1396, name = "Breaking Bad")),
+            SeriesSearchPageView(
+                results = listOf(
+                    SeriesSearchResultView(
+                        id = 1396,
+                        name = "Breaking Bad",
+                        overview = null,
+                        posterUrl = null,
+                        firstAirYear = "2008",
+                        finaleVerdict = FinaleVerdictResult(
+                            verdict = com.watchmetrics.model.FinaleVerdict.ENDED_WELL,
+                            message = "Ended well · finale ★ 9.5",
+                        ),
+                    ),
+                ),
                 totalResults = 1,
             ),
         )
@@ -38,14 +51,24 @@ class HomeControllerTest {
             status { isOk() }
             view { name("fragments/search-results :: results") }
             content { string(org.hamcrest.Matchers.containsString("Breaking Bad")) }
+            content { string(org.hamcrest.Matchers.containsString("Ended well")) }
         }
     }
 
     @Test
     fun `full page load with query renders index and results`() {
         given(seriesSearchService.search("succession")).willReturn(
-            TmdbTvSearchResponse(
-                results = listOf(TmdbTvShowSummary(id = 1, name = "Succession")),
+            SeriesSearchPageView(
+                results = listOf(
+                    SeriesSearchResultView(
+                        id = 1,
+                        name = "Succession",
+                        overview = null,
+                        posterUrl = null,
+                        firstAirYear = null,
+                        finaleVerdict = null,
+                    ),
+                ),
                 totalResults = 1,
             ),
         )

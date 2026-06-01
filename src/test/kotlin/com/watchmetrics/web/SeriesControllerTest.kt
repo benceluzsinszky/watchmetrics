@@ -45,6 +45,7 @@ class SeriesControllerTest {
                 overview = "A chemistry teacher.",
                 posterUrl = "https://image.tmdb.org/t/p/w342/poster.jpg",
                 firstAirYear = "2008",
+                status = "Ended",
                 imdbRating = 9.5,
                 rottenTomatoesScore = 96,
                 metacriticScore = null,

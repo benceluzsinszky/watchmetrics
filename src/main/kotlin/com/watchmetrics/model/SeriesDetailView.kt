@@ -6,6 +6,7 @@ data class SeriesDetailView(
     val overview: String?,
     val posterUrl: String?,
     val firstAirYear: String?,
+    val status: String?,
     val imdbRating: Double?,
     val rottenTomatoesScore: Int?,
     val metacriticScore: Int?,

@@ -71,6 +71,7 @@ class SeriesDetailService(
                 overview = show.overview,
                 posterUrl = show.posterUrl,
                 firstAirYear = show.firstAirDate?.take(4),
+                status = show.status,
                 imdbRating = imdbRating,
                 rottenTomatoesScore = omdbShow?.rottenTomatoesScore,
                 metacriticScore = omdbShow?.metacriticScore,

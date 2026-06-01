@@ -29,12 +29,13 @@
                 <div class="min-w-0 flex-1">
                     <div class="flex flex-wrap items-baseline gap-x-2 gap-y-1">
                         <h2 class="text-lg font-semibold text-slate-100" th:text="${show.name}">Show name</h2>
-                        <span th:if="${show.firstAirDate != null and !#strings.isEmpty(show.firstAirDate)}"
+                        <span th:if="${show.firstAirYear != null and !#strings.isEmpty(show.firstAirYear)}"
                               class="text-sm text-slate-500"
-                              th:text="${#strings.substring(show.firstAirDate, 0, 4)}">2008</span>
-                        <span th:if="${show.voteAverage != null and show.voteAverage > 0}"
-                              class="text-sm text-amber-400/90"
-                              th:text="${'★ ' + #numbers.formatDecimal(show.voteAverage, 1, 1)}">★ 8.5</span>
+                              th:text="${show.firstAirYear}">2008</span>
+                        <span th:if="${show.finaleVerdict != null and show.finaleVerdict.showInSearch}"
+                              class="rounded-full px-2 py-0.5 text-xs font-medium"
+                              th:classappend="${' ' + show.finaleVerdict.badgeClass}"
+                              th:text="${show.finaleVerdict.message}">Ended well</span>
                     </div>
                     <p th:if="${show.overview != null and !#strings.isEmpty(show.overview)}"
                        class="mt-2 line-clamp-2 text-sm text-slate-400"

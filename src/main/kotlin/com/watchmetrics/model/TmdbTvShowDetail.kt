@@ -14,6 +14,7 @@ data class TmdbTvShowDetail(
     val firstAirDate: String? = null,
     @JsonProperty("vote_average")
     val voteAverage: Double? = null,
+    val status: String? = null,
     val seasons: List<TmdbSeasonRef> = emptyList(),
 ) {
     val posterUrl: String?
