@@ -39,11 +39,15 @@ echo "Logs: docker compose logs -f watchmetrics"
 
 if ! $WITH_CADDY; then
   echo
-  echo "Port 80/443 already in use? Add this to your host Caddy/Nginx config:"
+  echo "Port 80/443 already in use? Add deploy/nginx-watchmetrics.conf to nginx instead:"
+  echo
+  echo "  sudo cp deploy/nginx-watchmetrics.conf /etc/nginx/sites-available/watchmetrics"
+  echo "  sudo ln -sf /etc/nginx/sites-available/watchmetrics /etc/nginx/sites-enabled/"
+  echo "  sudo nginx -t && sudo systemctl reload nginx"
+  echo
+  echo "Or for host Caddy:"
   echo
   echo "  watchmetrics.yourdomain.com {"
   echo "      reverse_proxy 127.0.0.1:${PORT}"
   echo "  }"
-  echo
-  echo "Then reload: sudo systemctl reload caddy"
 fi
