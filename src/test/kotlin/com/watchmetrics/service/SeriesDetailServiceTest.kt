@@ -82,6 +82,7 @@ class SeriesDetailServiceTest {
         assertEquals(7.9, episode.imdbRating)
         assertEquals(1, detail.ratingGrid.maxEpisodes)
         assertEquals(7.9, detail.ratingGrid.rows.single().cells.single().imdbRating)
+        assertEquals(7.9, detail.seasonRatingChart.bars.single().averageRating)
     }
 
     @Test

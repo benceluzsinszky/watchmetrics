@@ -2,6 +2,7 @@ package com.watchmetrics.web
 
 import com.watchmetrics.model.EpisodeView
 import com.watchmetrics.model.RatingGridBuilder
+import com.watchmetrics.model.SeasonRatingChartBuilder
 import com.watchmetrics.model.SeasonView
 import com.watchmetrics.model.SeriesDetailView
 import com.watchmetrics.service.SeriesDetailService
@@ -27,6 +28,15 @@ class SeriesControllerTest {
 
     @Test
     fun `renders series detail page`() {
+        val seasons = listOf(
+            SeasonView(
+                number = 1,
+                name = "Season 1",
+                episodes = listOf(
+                    EpisodeView(1, "Pilot", null, 7.9, "2008-01-20"),
+                ),
+            ),
+        )
         given(seriesDetailService.getDetail(1396)).willReturn(
             SeriesDetailView(
                 id = 1396,
@@ -37,26 +47,9 @@ class SeriesControllerTest {
                 imdbRating = 9.5,
                 rottenTomatoesScore = 96,
                 metacriticScore = null,
-                seasons = listOf(
-                    SeasonView(
-                        number = 1,
-                        name = "Season 1",
-                        episodes = listOf(
-                            EpisodeView(1, "Pilot", null, 7.9, "2008-01-20"),
-                        ),
-                    ),
-                ),
-                ratingGrid = RatingGridBuilder.build(
-                    listOf(
-                        SeasonView(
-                            number = 1,
-                            name = "Season 1",
-                            episodes = listOf(
-                                EpisodeView(1, "Pilot", null, 7.9, "2008-01-20"),
-                            ),
-                        ),
-                    ),
-                ),
+                seasons = seasons,
+                ratingGrid = RatingGridBuilder.build(seasons),
+                seasonRatingChart = SeasonRatingChartBuilder.build(seasons),
             ),
         )
 
@@ -65,6 +58,7 @@ class SeriesControllerTest {
             view { name("series/detail") }
             content { string(org.hamcrest.Matchers.containsString("Breaking Bad")) }
             content { string(org.hamcrest.Matchers.containsString("Pilot")) }
+            content { string(org.hamcrest.Matchers.containsString("Season averages")) }
             content { string(org.hamcrest.Matchers.containsString("Rating heatmap")) }
             content { string(org.hamcrest.Matchers.containsString("Episodes by season")) }
         }

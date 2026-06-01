@@ -11,6 +11,7 @@ data class SeriesDetailView(
     val metacriticScore: Int?,
     val seasons: List<SeasonView>,
     val ratingGrid: RatingGridView,
+    val seasonRatingChart: SeasonRatingChartView,
 )
 
 data class SeasonView(
