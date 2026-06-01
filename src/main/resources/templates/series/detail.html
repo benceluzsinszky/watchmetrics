@@ -7,7 +7,7 @@
     <link rel="stylesheet" th:href="@{/css/app.css}">
 </head>
 <body class="min-h-screen bg-slate-950 text-slate-100">
-<main class="mx-auto max-w-4xl px-6 py-12">
+<main class="mx-auto max-w-6xl px-6 py-12">
     <a href="/" class="text-sm text-slate-400 transition hover:text-slate-200">&larr; Back to search</a>
 
     <header class="mt-6 flex flex-col gap-6 sm:flex-row">
@@ -41,6 +41,41 @@
                class="mt-4 text-slate-500 italic">No description available.</p>
         </div>
     </header>
+
+    <section th:if="${series.ratingGrid.maxEpisodes > 0}" class="mt-12">
+        <h2 class="text-xl font-semibold">Rating heatmap</h2>
+        <p class="mt-1 text-sm text-slate-500">IMDb score by season and episode. Red = lower, green = higher.</p>
+
+        <div class="mt-6 overflow-x-auto rounded-xl border border-slate-800 bg-slate-900/40 p-4">
+            <div class="inline-grid gap-1"
+                 th:style="${'grid-template-columns: 5.5rem repeat(' + series.ratingGrid.maxEpisodes + ', 2.75rem)'}">
+                <div></div>
+                <div th:each="n : ${#numbers.sequence(1, series.ratingGrid.maxEpisodes)}"
+                     class="flex min-h-8 items-end justify-center pb-1 text-xs font-medium text-slate-500"
+                     th:text="${'E' + n}">E1</div>
+
+                <th:block th:each="row : ${series.ratingGrid.rows}">
+                    <div class="flex min-h-10 items-center pr-2 text-xs font-medium text-slate-300"
+                         th:text="${row.seasonLabel}">Season 1</div>
+                    <div th:each="cell : ${row.cells}"
+                         class="flex min-h-10 min-w-10 items-center justify-center rounded-sm text-xs font-semibold tabular-nums"
+                         th:classappend="${cell.hasEpisode and cell.hasRating} ? 'text-white' : 'text-slate-600'"
+                         th:style="${'background-color:' + cell.heatmapColor}"
+                         th:title="${cell.tooltip}"
+                         th:text="${cell.hasRating} ? ${#numbers.formatDecimal(cell.imdbRating, 1, 1)} : (${cell.hasEpisode} ? '—' : '')">
+                        8.9
+                    </div>
+                </th:block>
+            </div>
+        </div>
+
+        <div class="mt-3 flex flex-wrap items-center gap-3 text-xs text-slate-500">
+            <span>Low</span>
+            <div class="h-3 w-32 rounded-full bg-linear-to-r from-red-700 via-amber-500 to-emerald-500"></div>
+            <span>High</span>
+            <span class="text-slate-600">Hover a cell for episode details</span>
+        </div>
+    </section>
 
     <section class="mt-12">
         <h2 class="text-xl font-semibold">Episodes by season</h2>

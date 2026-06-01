@@ -4,6 +4,7 @@ import com.watchmetrics.client.OmdbClient
 import com.watchmetrics.client.TmdbClient
 import com.watchmetrics.model.EpisodeView
 import com.watchmetrics.model.OmdbParsing
+import com.watchmetrics.model.RatingGridBuilder
 import com.watchmetrics.model.SeasonView
 import com.watchmetrics.model.SeriesDetailView
 import org.springframework.stereotype.Service
@@ -72,6 +73,7 @@ class SeriesDetailService(
                 rottenTomatoesScore = omdbShow?.rottenTomatoesScore,
                 metacriticScore = omdbShow?.metacriticScore,
                 seasons = seasons,
+                ratingGrid = RatingGridBuilder.build(seasons),
             )
         } catch (ex: RestClientResponseException) {
             if (ex.statusCode.value() == 404) {

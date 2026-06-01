@@ -80,6 +80,8 @@ class SeriesDetailServiceTest {
         assertEquals(9.5, detail.imdbRating)
         val episode = detail.seasons.single().episodes.single()
         assertEquals(7.9, episode.imdbRating)
+        assertEquals(1, detail.ratingGrid.maxEpisodes)
+        assertEquals(7.9, detail.ratingGrid.rows.single().cells.single().imdbRating)
     }
 
     @Test
