@@ -25,6 +25,7 @@ class CacheConfig {
                     cache(CacheNames.OMDB_TITLE, Duration.ofHours(6), maxSize = 500),
                     cache(CacheNames.OMDB_SEASON, Duration.ofHours(6), maxSize = 2_000),
                     cache(CacheNames.FINALE_VERDICT, Duration.ofHours(6), maxSize = 200),
+                    cache(CacheNames.SERIES_DETAIL, Duration.ofHours(1), maxSize = 100),
                 ),
             )
         }
@@ -47,4 +48,5 @@ object CacheNames {
     const val OMDB_TITLE = "omdb-title"
     const val OMDB_SEASON = "omdb-season"
     const val FINALE_VERDICT = "finale-verdict"
+    const val SERIES_DETAIL = "series-detail"
 }
