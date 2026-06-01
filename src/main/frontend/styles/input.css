@@ -1,5 +1,7 @@
 @import "tailwindcss";
 @source "../../resources/templates/**/*.html";
+@source "../../kotlin/**/*.kt";
+@source inline("bg-emerald-500/15", "text-emerald-400", "bg-red-500/15", "text-red-400");
 
 .htmx-indicator {
   opacity: 0;
