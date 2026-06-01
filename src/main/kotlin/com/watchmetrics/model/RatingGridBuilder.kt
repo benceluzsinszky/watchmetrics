@@ -10,13 +10,14 @@ object RatingGridBuilder {
 
         val rows = seasonsForGrid.map { season ->
             val episodesByNumber = season.episodes.associateBy { it.number }
+            val seasonLabel = shortSeasonLabel(season.number)
             RatingGridRow(
-                seasonLabel = season.name,
+                seasonLabel = seasonLabel,
                 cells = (1..maxEpisodes).map { episodeNumber ->
                     val episode = episodesByNumber[episodeNumber]
                     if (episode == null) {
                         RatingGridCell(
-                            seasonLabel = season.name,
+                            seasonLabel = seasonLabel,
                             episodeNumber = null,
                             episodeName = null,
                             displayRating = null,
@@ -26,7 +27,7 @@ object RatingGridBuilder {
                     } else {
                         val rating = episode.resolvedRating()
                         RatingGridCell(
-                            seasonLabel = season.name,
+                            seasonLabel = seasonLabel,
                             episodeNumber = episode.number,
                             episodeName = episode.name,
                             displayRating = rating?.value,
@@ -40,6 +41,8 @@ object RatingGridBuilder {
 
         return RatingGridView(maxEpisodes = maxEpisodes, rows = rows)
     }
+
+    private fun shortSeasonLabel(seasonNumber: Int): String = "S$seasonNumber"
 
     private fun List<SeasonView>.maxEpisodeNumber(): Int =
         maxOfOrNull { season -> season.episodes.maxOfOrNull { it.number } ?: 0 } ?: 0

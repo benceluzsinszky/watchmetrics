@@ -74,6 +74,6 @@ class RatingGridBuilderTest {
         )
 
         assertEquals(1, grid.rows.size)
-        assertEquals("Season 1", grid.rows.single().seasonLabel)
+        assertEquals("S1", grid.rows.single().seasonLabel)
     }
 }
