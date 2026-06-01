@@ -21,6 +21,7 @@ fi
 
 PORT="${WATCHMETRICS_PORT:-8081}"
 export WATCHMETRICS_PORT="$PORT"
+export DOCKER_BUILDKIT=1
 
 docker compose build
 
