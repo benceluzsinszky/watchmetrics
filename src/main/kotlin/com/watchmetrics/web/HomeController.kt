@@ -1,11 +1,13 @@
 package com.watchmetrics.web
 
+import com.watchmetrics.service.SeriesFinaleVerdictService
 import com.watchmetrics.service.SeriesSearchException
 import com.watchmetrics.service.SeriesSearchService
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.util.UriUtils
@@ -14,6 +16,7 @@ import java.nio.charset.StandardCharsets
 @Controller
 class HomeController(
     private val seriesSearchService: SeriesSearchService,
+    private val seriesFinaleVerdictService: SeriesFinaleVerdictService,
 ) {
 
     @GetMapping("/")
@@ -35,6 +38,12 @@ class HomeController(
         }
         val encoded = UriUtils.encodeQueryParam(trimmed, StandardCharsets.UTF_8)
         return "redirect:/?q=$encoded"
+    }
+
+    @GetMapping("/search/verdict/{tmdbId}")
+    fun searchVerdict(@PathVariable tmdbId: Int, model: Model): String {
+        model.addAttribute("verdict", seriesFinaleVerdictService.resolve(tmdbId))
+        return VERDICT_FRAGMENT
     }
 
     @ExceptionHandler(SeriesSearchException::class)
@@ -71,5 +80,6 @@ class HomeController(
 
     companion object {
         private const val SEARCH_FRAGMENT = "fragments/search-results :: results"
+        private const val VERDICT_FRAGMENT = "fragments/search-verdict :: badge"
     }
 }

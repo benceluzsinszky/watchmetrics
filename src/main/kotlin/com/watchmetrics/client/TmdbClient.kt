@@ -1,6 +1,8 @@
 package com.watchmetrics.client
 
+import com.watchmetrics.config.CacheNames
 import com.watchmetrics.config.TmdbProperties
+import org.springframework.cache.annotation.Cacheable
 import com.watchmetrics.model.TmdbExternalIds
 import com.watchmetrics.model.TmdbSeasonDetail
 import com.watchmetrics.model.TmdbTvSearchResponse
@@ -18,6 +20,10 @@ class TmdbClient(
     private val properties: TmdbProperties,
 ) {
 
+    @Cacheable(
+        cacheNames = [CacheNames.TMDB_SEARCH],
+        key = "#query.trim().toLowerCase() + '-' + #page",
+    )
     fun searchTv(query: String, page: Int = 1): TmdbTvSearchResponse {
         requireConfigured()
         require(query.isNotBlank()) { "Search query must not be blank." }
@@ -33,6 +39,7 @@ class TmdbClient(
             .requiredBody<TmdbTvSearchResponse>()
     }
 
+    @Cacheable(cacheNames = [CacheNames.TMDB_SHOW], key = "#id")
     fun getTvShow(id: Int): TmdbTvShowDetail {
         requireConfigured()
 
@@ -42,6 +49,10 @@ class TmdbClient(
             .requiredBody<TmdbTvShowDetail>()
     }
 
+    @Cacheable(
+        cacheNames = [CacheNames.TMDB_SEASON],
+        key = "#showId + '-' + #seasonNumber",
+    )
     fun getTvSeason(showId: Int, seasonNumber: Int): TmdbSeasonDetail {
         requireConfigured()
 
@@ -51,6 +62,7 @@ class TmdbClient(
             .requiredBody<TmdbSeasonDetail>()
     }
 
+    @Cacheable(cacheNames = [CacheNames.TMDB_EXTERNAL_IDS], key = "#id")
     fun getTvExternalIds(id: Int): TmdbExternalIds {
         requireConfigured()
 

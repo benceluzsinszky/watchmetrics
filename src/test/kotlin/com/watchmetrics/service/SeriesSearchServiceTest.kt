@@ -1,13 +1,6 @@
 package com.watchmetrics.service
 
 import com.watchmetrics.client.TmdbClient
-import com.watchmetrics.model.FinaleVerdict
-import com.watchmetrics.model.FinaleVerdictResult
-import com.watchmetrics.model.SeriesDetailView
-import com.watchmetrics.model.SeriesHighlightsView
-import com.watchmetrics.model.SeriesFinaleHighlight
-import com.watchmetrics.model.RatingGridView
-import com.watchmetrics.model.SeasonRatingChartView
 import com.watchmetrics.model.TmdbTvSearchResponse
 import com.watchmetrics.model.TmdbTvShowSummary
 import org.junit.jupiter.api.Test
@@ -19,7 +12,7 @@ import org.mockito.junit.jupiter.MockitoExtension
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.web.client.RestClientResponseException
 import kotlin.test.assertEquals
-import kotlin.test.assertNull
+import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 @ExtendWith(MockitoExtension::class)
@@ -27,9 +20,6 @@ class SeriesSearchServiceTest {
 
     @Mock
     private lateinit var tmdbClient: TmdbClient
-
-    @Mock
-    private lateinit var seriesDetailService: SeriesDetailService
 
     @InjectMocks
     private lateinit var seriesSearchService: SeriesSearchService
@@ -42,34 +32,22 @@ class SeriesSearchServiceTest {
     }
 
     @Test
-    fun `enriches search results with finale verdict`() {
-        given(tmdbClient.searchTv("game of thrones")).willReturn(
+    fun `returns TMDB results without blocking on finale verdict`() {
+        given(tmdbClient.searchTv("breaking")).willReturn(
             TmdbTvSearchResponse(
-                results = listOf(TmdbTvShowSummary(id = 1399, name = "Game of Thrones")),
-                totalResults = 1,
+                results = (1..9).map { id ->
+                    TmdbTvShowSummary(id = id, name = "Show $id")
+                },
+                totalResults = 9,
             ),
         )
-        given(seriesDetailService.getDetail(1399)).willReturn(endedShowDetail(6.4))
 
-        val response = seriesSearchService.search("game of thrones")
+        val response = seriesSearchService.search("breaking")
 
-        assertEquals("Game of Thrones", response.results.single().name)
-        assertEquals(FinaleVerdict.ENDED_BADLY, response.results.single().finaleVerdict?.verdict)
-    }
-
-    @Test
-    fun `continues search when finale lookup fails`() {
-        given(tmdbClient.searchTv("mystery")).willReturn(
-            TmdbTvSearchResponse(
-                results = listOf(TmdbTvShowSummary(id = 999, name = "Mystery Show")),
-                totalResults = 1,
-            ),
-        )
-        given(seriesDetailService.getDetail(999)).willThrow(SeriesNotFoundException(999))
-
-        val response = seriesSearchService.search("mystery")
-
-        assertNull(response.results.single().finaleVerdict)
+        assertEquals(9, response.results.size)
+        assertTrue(response.results[0].loadVerdict)
+        assertTrue(response.results[7].loadVerdict)
+        assertFalse(response.results[8].loadVerdict)
     }
 
     @Test
@@ -82,42 +60,4 @@ class SeriesSearchServiceTest {
             seriesSearchService.search("fail")
         }
     }
-
-    private fun endedShowDetail(finaleRating: Double): SeriesDetailView =
-        SeriesDetailView(
-            id = 1399,
-            name = "Game of Thrones",
-            overview = null,
-            posterUrl = null,
-            firstAirYear = "2011",
-            status = "Ended",
-            displayRating = 9.0,
-            ratingSource = com.watchmetrics.model.RatingSource.IMDB,
-            rottenTomatoesScore = null,
-            metacriticScore = null,
-            seasons = emptyList(),
-            ratingGrid = RatingGridView(maxEpisodes = 0, rows = emptyList()),
-            seasonRatingChart = SeasonRatingChartView(
-                bars = emptyList(),
-                linePolylinePoints = null,
-                linePoints = emptyList(),
-                hasData = false,
-            ),
-            highlights = SeriesHighlightsView(
-                finale = SeriesFinaleHighlight(
-                    lastSeasonNumber = 8,
-                    lastSeasonName = "Season 8",
-                    lastSeasonAverage = finaleRating,
-                    lastSeasonAverageSource = com.watchmetrics.model.RatingSource.IMDB,
-                    lastEpisodeNumber = 6,
-                    lastEpisodeName = "The Iron Throne",
-                    lastEpisodeRating = finaleRating,
-                    lastEpisodeRatingSource = com.watchmetrics.model.RatingSource.IMDB,
-                ),
-                bestSeason = null,
-                worstSeason = null,
-                bestEpisode = null,
-                worstEpisode = null,
-            ),
-        )
 }

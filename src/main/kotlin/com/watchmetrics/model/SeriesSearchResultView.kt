@@ -11,17 +11,17 @@ data class SeriesSearchResultView(
     val overview: String?,
     val posterUrl: String?,
     val firstAirYear: String?,
-    val finaleVerdict: FinaleVerdictResult?,
+    val loadVerdict: Boolean,
 ) {
     companion object {
-        fun from(summary: TmdbTvShowSummary, finaleVerdict: FinaleVerdictResult?): SeriesSearchResultView =
+        fun from(summary: TmdbTvShowSummary, loadVerdict: Boolean = false): SeriesSearchResultView =
             SeriesSearchResultView(
                 id = summary.id,
                 name = summary.name,
                 overview = summary.overview,
                 posterUrl = summary.posterUrl,
                 firstAirYear = summary.firstAirDate?.take(4),
-                finaleVerdict = finaleVerdict,
+                loadVerdict = loadVerdict,
             )
     }
 }

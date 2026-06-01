@@ -1,8 +1,10 @@
 package com.watchmetrics.web
 
+import com.watchmetrics.model.FinaleVerdict
 import com.watchmetrics.model.FinaleVerdictResult
 import com.watchmetrics.model.SeriesSearchPageView
 import com.watchmetrics.model.SeriesSearchResultView
+import com.watchmetrics.service.SeriesFinaleVerdictService
 import com.watchmetrics.service.SeriesSearchService
 import org.junit.jupiter.api.Test
 import org.mockito.BDDMockito.given
@@ -23,8 +25,11 @@ class HomeControllerTest {
     @MockitoBean
     private lateinit var seriesSearchService: SeriesSearchService
 
+    @MockitoBean
+    private lateinit var seriesFinaleVerdictService: SeriesFinaleVerdictService
+
     @Test
-    fun `htmx request returns search fragment`() {
+    fun `htmx request returns search fragment quickly with lazy verdict placeholders`() {
         given(seriesSearchService.search("breaking bad")).willReturn(
             SeriesSearchPageView(
                 results = listOf(
@@ -34,10 +39,7 @@ class HomeControllerTest {
                         overview = null,
                         posterUrl = null,
                         firstAirYear = "2008",
-                        finaleVerdict = FinaleVerdictResult(
-                            verdict = com.watchmetrics.model.FinaleVerdict.ENDED_WELL,
-                            message = "Ended well · finale ★ 9.5",
-                        ),
+                        loadVerdict = true,
                     ),
                 ),
                 totalResults = 1,
@@ -51,6 +53,24 @@ class HomeControllerTest {
             status { isOk() }
             view { name("fragments/search-results :: results") }
             content { string(org.hamcrest.Matchers.containsString("Breaking Bad")) }
+            content { string(org.hamcrest.Matchers.containsString("/search/verdict/1396")) }
+        }
+    }
+
+    @Test
+    fun `verdict endpoint returns badge fragment`() {
+        given(seriesFinaleVerdictService.resolve(1396)).willReturn(
+            FinaleVerdictResult(
+                verdict = FinaleVerdict.ENDED_WELL,
+                message = "Ended well · finale ★ 9.5 IMDb",
+            ),
+        )
+
+        mockMvc.get("/search/verdict/1396") {
+            header("HX-Request", "true")
+        }.andExpect {
+            status { isOk() }
+            view { name("fragments/search-verdict :: badge") }
             content { string(org.hamcrest.Matchers.containsString("Ended well")) }
         }
     }
@@ -66,7 +86,7 @@ class HomeControllerTest {
                         overview = null,
                         posterUrl = null,
                         firstAirYear = null,
-                        finaleVerdict = null,
+                        loadVerdict = false,
                     ),
                 ),
                 totalResults = 1,

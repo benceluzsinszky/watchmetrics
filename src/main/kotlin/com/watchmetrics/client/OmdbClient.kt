@@ -1,6 +1,8 @@
 package com.watchmetrics.client
 
+import com.watchmetrics.config.CacheNames
 import com.watchmetrics.config.OmdbProperties
+import org.springframework.cache.annotation.Cacheable
 import com.watchmetrics.model.OmdbSeasonResponse
 import com.watchmetrics.model.OmdbTitleDetail
 import org.slf4j.LoggerFactory
@@ -19,6 +21,11 @@ class OmdbClient(
 
     private val log = LoggerFactory.getLogger(javaClass)
 
+    @Cacheable(
+        cacheNames = [CacheNames.OMDB_TITLE],
+        key = "#imdbId",
+        unless = "#result == null",
+    )
     fun getTitle(imdbId: String): OmdbTitleDetail? {
         if (!properties.isConfigured || imdbId.isBlank()) {
             return null
@@ -35,6 +42,11 @@ class OmdbClient(
         }.getOrNull()
     }
 
+    @Cacheable(
+        cacheNames = [CacheNames.OMDB_SEASON],
+        key = "#imdbId + '-' + #seasonNumber",
+        unless = "#result == null",
+    )
     fun getSeason(imdbId: String, seasonNumber: Int): OmdbSeasonResponse? {
         if (!properties.isConfigured || imdbId.isBlank()) {
             return null

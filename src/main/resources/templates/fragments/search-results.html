@@ -32,10 +32,12 @@
                         <span th:if="${show.firstAirYear != null and !#strings.isEmpty(show.firstAirYear)}"
                               class="text-sm text-slate-500"
                               th:text="${show.firstAirYear}">2008</span>
-                        <span th:if="${show.finaleVerdict != null and show.finaleVerdict.showInSearch}"
-                              class="rounded-full px-2 py-0.5 text-xs font-medium"
-                              th:classappend="${' ' + show.finaleVerdict.badgeClass}"
-                              th:text="${show.finaleVerdict.message}">Ended well</span>
+                        <span th:if="${show.loadVerdict}"
+                              th:attr="hx-get=@{/search/verdict/{id}(id=${show.id})}"
+                              hx-trigger="load"
+                              hx-swap="outerHTML"
+                              class="inline-block h-5 w-28 animate-pulse rounded-full bg-slate-800/80"
+                              aria-hidden="true"></span>
                     </div>
                     <p th:if="${show.overview != null and !#strings.isEmpty(show.overview)}"
                        class="mt-2 line-clamp-2 text-sm text-slate-400"

@@ -1,0 +1,7 @@
+<span th:fragment="badge"
+      th:if="${verdict != null and verdict.showInSearch}"
+      class="rounded-full px-2 py-0.5 text-xs font-medium"
+      th:classappend="${' ' + verdict.badgeClass}"
+      th:text="${verdict.message}">Ended well</span>
+<span th:fragment="badge"
+      th:if="${verdict == null or !verdict.showInSearch}"></span>
