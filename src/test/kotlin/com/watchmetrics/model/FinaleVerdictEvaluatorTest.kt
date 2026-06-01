@@ -13,7 +13,9 @@ class FinaleVerdictEvaluatorTest {
             status = "Ended",
             highlights = highlights(
                 lastEpisodeRating = 9.5,
+                lastEpisodeRatingSource = RatingSource.IMDB,
                 lastSeasonAverage = 9.0,
+                lastSeasonAverageSource = RatingSource.IMDB,
             ),
         )
 
@@ -28,7 +30,9 @@ class FinaleVerdictEvaluatorTest {
             status = "Ended",
             highlights = highlights(
                 lastEpisodeRating = 6.4,
+                lastEpisodeRatingSource = RatingSource.IMDB,
                 lastSeasonAverage = 6.4,
+                lastSeasonAverageSource = RatingSource.IMDB,
             ),
         )
 
@@ -41,13 +45,23 @@ class FinaleVerdictEvaluatorTest {
         assertNull(
             FinaleVerdictEvaluator.evaluate(
                 status = "Returning Series",
-                highlights = highlights(lastEpisodeRating = 9.0, lastSeasonAverage = 9.0),
+                highlights = highlights(
+                    lastEpisodeRating = 9.0,
+                    lastEpisodeRatingSource = RatingSource.IMDB,
+                    lastSeasonAverage = 9.0,
+                    lastSeasonAverageSource = RatingSource.IMDB,
+                ),
             ),
         )
         assertNull(
             FinaleVerdictEvaluator.evaluate(
                 status = "Ended",
-                highlights = highlights(lastEpisodeRating = 7.5, lastSeasonAverage = 7.8),
+                highlights = highlights(
+                    lastEpisodeRating = 7.5,
+                    lastEpisodeRatingSource = RatingSource.IMDB,
+                    lastSeasonAverage = 7.8,
+                    lastSeasonAverageSource = RatingSource.IMDB,
+                ),
             ),
         )
     }
@@ -58,25 +72,31 @@ class FinaleVerdictEvaluatorTest {
             status = "Ended",
             highlights = highlights(
                 lastEpisodeRating = null,
+                lastEpisodeRatingSource = null,
                 lastSeasonAverage = 8.5,
+                lastSeasonAverageSource = RatingSource.TMDB,
             ),
         )
 
         assertNotNull(result)
-        assertEquals("Ended well · final season ★ 8.5 avg", result!!.message)
+        assertEquals("Ended well · final season ★ 8.5 avg TMDB", result!!.message)
     }
 
     private fun highlights(
         lastEpisodeRating: Double?,
+        lastEpisodeRatingSource: RatingSource?,
         lastSeasonAverage: Double?,
+        lastSeasonAverageSource: RatingSource?,
     ): SeriesHighlightsView {
         val finale = SeriesFinaleHighlight(
             lastSeasonNumber = 8,
             lastSeasonName = "Season 8",
             lastSeasonAverage = lastSeasonAverage,
+            lastSeasonAverageSource = lastSeasonAverageSource,
             lastEpisodeNumber = 6,
             lastEpisodeName = "Finale",
             lastEpisodeRating = lastEpisodeRating,
+            lastEpisodeRatingSource = lastEpisodeRatingSource,
         )
         return SeriesHighlightsView(
             finale = finale,

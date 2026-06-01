@@ -9,28 +9,28 @@ import kotlin.test.assertTrue
 class SeasonRatingChartBuilderTest {
 
     @Test
-    fun `computes average imdb per season excluding specials`() {
+    fun `computes average per season excluding specials`() {
         val chart = SeasonRatingChartBuilder.build(
             listOf(
                 SeasonView(
                     number = 0,
                     name = "Specials",
-                    episodes = listOf(EpisodeView(1, "Special", null, 9.5, null)),
+                    episodes = listOf(EpisodeView(1, "Special", null, 9.5, null, null)),
                 ),
                 SeasonView(
                     number = 1,
                     name = "Season 1",
                     episodes = listOf(
-                        EpisodeView(1, "Pilot", null, 8.0, null),
-                        EpisodeView(2, "Cat's in the Bag", null, 8.4, null),
+                        EpisodeView(1, "Pilot", null, 8.0, null, null),
+                        EpisodeView(2, "Cat's in the Bag", null, 8.4, null, null),
                     ),
                 ),
                 SeasonView(
                     number = 2,
                     name = "Season 2",
                     episodes = listOf(
-                        EpisodeView(1, "Seven Thirty-Seven", null, 8.8, null),
-                        EpisodeView(2, "Grilled", null, null, null),
+                        EpisodeView(1, "Seven Thirty-Seven", null, 8.8, null, null),
+                        EpisodeView(2, "Grilled", null, null, 7.0, null),
                     ),
                 ),
             ),
@@ -38,7 +38,7 @@ class SeasonRatingChartBuilderTest {
 
         assertEquals(2, chart.bars.size)
         assertEquals(8.2, chart.bars[0].averageRating)
-        assertEquals(8.8, chart.bars[1].averageRating)
+        assertEquals(7.9, chart.bars[1].averageRating)
         assertTrue(chart.hasData)
         assertNotNull(chart.linePolylinePoints)
     }
@@ -50,7 +50,7 @@ class SeasonRatingChartBuilderTest {
                 SeasonView(
                     number = 1,
                     name = "Season 1",
-                    episodes = listOf(EpisodeView(1, "Pilot", null, 8.0, null)),
+                    episodes = listOf(EpisodeView(1, "Pilot", null, 8.0, null, null)),
                 ),
             ),
         )

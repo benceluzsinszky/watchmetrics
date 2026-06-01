@@ -39,9 +39,9 @@ object SeasonRatingChartBuilder {
             .filter { it.number != 0 }
             .map { season ->
                 val ratings = season.episodes.mapNotNull { episode ->
-                    episode.imdbRating?.takeIf { it > 0 }
+                    episode.resolvedRating()
                 }
-                val average = ratings.takeIf { it.isNotEmpty() }?.average()
+                val average = ratings.takeIf { it.isNotEmpty() }?.map { it.value }?.average()
                 SeasonRatingBar(
                     seasonNumber = season.number,
                     seasonLabel = season.name,

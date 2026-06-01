@@ -25,8 +25,8 @@
             <div class="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-slate-400">
                 <span th:if="${series.firstAirYear != null}" th:text="${series.firstAirYear}">2008</span>
                 <span class="text-amber-400/90"
-                      th:classappend="${series.imdbRating == null} ? 'text-slate-600'"
-                      th:text="${series.imdbRating != null} ? ${'★ ' + #numbers.formatDecimal(series.imdbRating, 1, 1) + ' IMDb'} : '— IMDb'">★ 8.9 IMDb</span>
+                      th:classappend="${series.displayRating == null} ? 'text-slate-600'"
+                      th:text="${series.displayRating != null} ? ${series.showRatingLabel} : '—'">★ 8.9 IMDb</span>
                 <span th:if="${series.rottenTomatoesScore != null}"
                       class="text-red-400/90"
                       th:text="${series.rottenTomatoesScore + '% RT'}">96% RT</span>
@@ -44,7 +44,7 @@
 
     <section th:if="${series.highlights.hasData}" class="mt-12">
         <h2 class="text-xl font-semibold">Highlights</h2>
-        <p class="mt-1 text-sm text-slate-500">Finale, peaks, and lows from IMDb-rated episodes. Specials excluded.</p>
+        <p class="mt-1 text-sm text-slate-500">Finale, peaks, and lows. IMDb when available, otherwise TMDB. Specials excluded.</p>
 
         <div class="mt-6 grid gap-4 lg:grid-cols-3">
             <div th:if="${series.highlights.finale != null}"
@@ -55,7 +55,7 @@
                         <dt class="text-xs text-slate-500">Final season · <span th:text="${series.highlights.finale.lastSeasonName}">Season 8</span></dt>
                         <dd class="mt-1 text-lg font-semibold tabular-nums text-amber-400/90"
                             th:classappend="${series.highlights.finale.lastSeasonAverage == null} ? 'text-slate-600'"
-                            th:text="${series.highlights.finale.lastSeasonAverage != null} ? ${'★ ' + #numbers.formatDecimal(series.highlights.finale.lastSeasonAverage, 1, 1) + ' avg IMDb'} : '— avg IMDb'">
+                            th:text="${series.highlights.finale.lastSeasonAverageLabel}">
                             ★ 8.7 avg IMDb
                         </dd>
                     </div>
@@ -66,7 +66,7 @@
                         </dt>
                         <dd class="mt-1 text-lg font-semibold tabular-nums text-amber-400/90"
                             th:classappend="${series.highlights.finale.lastEpisodeRating == null} ? 'text-slate-600'"
-                            th:text="${series.highlights.finale.lastEpisodeRating != null} ? ${'★ ' + #numbers.formatDecimal(series.highlights.finale.lastEpisodeRating, 1, 1) + ' IMDb'} : '— IMDb'">
+                            th:text="${series.highlights.finale.lastEpisodeRatingLabel}">
                             ★ 6.4 IMDb
                         </dd>
                     </div>
@@ -79,7 +79,7 @@
                     <div th:if="${series.highlights.bestSeason != null}">
                         <dt class="text-xs text-slate-500">Season · <span th:text="${series.highlights.bestSeason.seasonName}">Season 4</span></dt>
                         <dd class="mt-1 text-lg font-semibold tabular-nums text-emerald-400/90"
-                            th:text="${'★ ' + #numbers.formatDecimal(series.highlights.bestSeason.averageRating, 1, 1) + ' avg IMDb'}">
+                            th:text="${series.highlights.bestSeason.ratingLabel}">
                             ★ 9.2 avg IMDb
                         </dd>
                     </div>
@@ -92,7 +92,7 @@
                             <span th:text="${series.highlights.bestEpisode.code + ' ' + series.highlights.bestEpisode.episodeName}">S2E9 Blackwater</span>
                         </dt>
                         <dd class="mt-1 text-lg font-semibold tabular-nums text-emerald-400/90"
-                            th:text="${'★ ' + #numbers.formatDecimal(series.highlights.bestEpisode.imdbRating, 1, 1) + ' IMDb'}">
+                            th:text="${series.highlights.bestEpisode.ratingLabel}">
                             ★ 9.7 IMDb
                         </dd>
                     </div>
@@ -108,7 +108,7 @@
                     <div th:if="${series.highlights.worstSeason != null}">
                         <dt class="text-xs text-slate-500">Season · <span th:text="${series.highlights.worstSeason.seasonName}">Season 8</span></dt>
                         <dd class="mt-1 text-lg font-semibold tabular-nums text-red-400/90"
-                            th:text="${'★ ' + #numbers.formatDecimal(series.highlights.worstSeason.averageRating, 1, 1) + ' avg IMDb'}">
+                            th:text="${series.highlights.worstSeason.ratingLabel}">
                             ★ 6.4 avg IMDb
                         </dd>
                     </div>
@@ -121,7 +121,7 @@
                             <span th:text="${series.highlights.worstEpisode.code + ' ' + series.highlights.worstEpisode.episodeName}">S8E6 Finale</span>
                         </dt>
                         <dd class="mt-1 text-lg font-semibold tabular-nums text-red-400/90"
-                            th:text="${'★ ' + #numbers.formatDecimal(series.highlights.worstEpisode.imdbRating, 1, 1) + ' IMDb'}">
+                            th:text="${series.highlights.worstEpisode.ratingLabel}">
                             ★ 4.0 IMDb
                         </dd>
                     </div>
@@ -135,7 +135,7 @@
 
     <section th:if="${series.ratingGrid.maxEpisodes > 0}" class="mt-12">
         <h2 class="text-xl font-semibold">Rating heatmap</h2>
-        <p class="mt-1 text-sm text-slate-500">IMDb score by season and episode. 5 is red; below 5 turns muddy fast. 8+ leans green.</p>
+        <p class="mt-1 text-sm text-slate-500">Score by season and episode (IMDb, or TMDB when missing). 5 is red; below 5 turns muddy fast. 8+ leans green.</p>
 
         <div class="mt-6 overflow-x-auto rounded-xl border border-slate-800 bg-slate-900/40 p-4">
             <div class="inline-grid gap-1"
@@ -153,7 +153,7 @@
                          th:classappend="${cell.hasEpisode and cell.hasRating} ? 'text-white' : 'text-slate-600'"
                          th:style="${'background-color:' + cell.heatmapColor}"
                          th:title="${cell.tooltip}"
-                         th:text="${cell.hasRating} ? ${#numbers.formatDecimal(cell.imdbRating, 1, 1)} : (${cell.hasEpisode} ? '—' : '')">
+                         th:text="${cell.hasRating} ? ${#numbers.formatDecimal(cell.displayRating, 1, 1)} : (${cell.hasEpisode} ? '—' : '')">
                         8.9
                     </div>
                 </th:block>
@@ -170,7 +170,7 @@
 
     <section th:if="${series.seasonRatingChart.hasData}" class="mt-12">
         <h2 class="text-xl font-semibold">Season averages</h2>
-        <p class="mt-1 text-sm text-slate-500">Mean IMDb score per season from rated episodes only. Specials excluded.</p>
+        <p class="mt-1 text-sm text-slate-500">Mean score per season (IMDb or TMDB). Specials excluded.</p>
 
         <div class="mt-6 grid gap-6 lg:grid-cols-2">
             <div class="rounded-xl border border-slate-800 bg-slate-900/40 p-4">
@@ -259,7 +259,7 @@
 
     <section class="mt-12">
         <h2 class="text-xl font-semibold">Episodes by season</h2>
-        <p class="mt-1 text-sm text-slate-500">IMDb rating per episode. Show-level Rotten Tomatoes and Metacritic when OMDb has them.</p>
+        <p class="mt-1 text-sm text-slate-500">Per-episode score (IMDb, or TMDB when missing). Show-level Rotten Tomatoes and Metacritic when OMDb has them.</p>
 
         <p th:if="${#lists.isEmpty(series.seasons)}"
            class="mt-6 rounded-lg border border-slate-800 bg-slate-900/50 px-4 py-6 text-center text-slate-400">
@@ -293,8 +293,8 @@
                                th:text="${episode.airDate}">2008-01-20</p>
                         </div>
                         <p class="shrink-0 text-sm font-medium tabular-nums"
-                           th:classappend="${episode.hasImdbRating} ? 'text-amber-400/90' : 'text-slate-600'"
-                           th:text="${episode.hasImdbRating} ? ${'★ ' + #numbers.formatDecimal(episode.imdbRating, 1, 1) + ' IMDb'} : '— IMDb'">
+                           th:classappend="${episode.hasRating} ? 'text-amber-400/90' : 'text-slate-600'"
+                           th:text="${episode.ratingLabel}">
                             ★ 8.5 IMDb
                         </p>
                     </li>

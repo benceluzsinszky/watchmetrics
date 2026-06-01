@@ -7,14 +7,22 @@ data class SeriesDetailView(
     val posterUrl: String?,
     val firstAirYear: String?,
     val status: String?,
-    val imdbRating: Double?,
+    val displayRating: Double?,
+    val ratingSource: RatingSource?,
     val rottenTomatoesScore: Int?,
     val metacriticScore: Int?,
     val seasons: List<SeasonView>,
     val ratingGrid: RatingGridView,
     val seasonRatingChart: SeasonRatingChartView,
     val highlights: SeriesHighlightsView,
-)
+) {
+    val showRatingLabel: String
+        get() = when {
+            displayRating != null && ratingSource != null ->
+                RatingFormat.label(displayRating, ratingSource)
+            else -> "—"
+        }
+}
 
 data class SeasonView(
     val number: Int,
@@ -27,8 +35,21 @@ data class EpisodeView(
     val name: String,
     val overview: String?,
     val imdbRating: Double?,
+    val tmdbRating: Double?,
     val airDate: String?,
 ) {
-    val hasImdbRating: Boolean
-        get() = imdbRating != null && imdbRating > 0
+    val displayRating: Double?
+        get() = resolvedRating()?.value
+
+    val ratingSource: RatingSource?
+        get() = resolvedRating()?.source
+
+    val hasRating: Boolean
+        get() = displayRating != null
+
+    val ratingLabel: String
+        get() = resolvedRating()?.formatted ?: "—"
+
+    fun resolvedRating(): DisplayRating? =
+        RatingResolver.from(imdbRating, tmdbRating)
 }

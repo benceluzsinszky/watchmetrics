@@ -13,22 +13,22 @@ class SeriesHighlightsBuilderTest {
                 SeasonView(
                     number = 0,
                     name = "Specials",
-                    episodes = listOf(EpisodeView(1, "Special", null, 10.0, null)),
+                    episodes = listOf(EpisodeView(1, "Special", null, 10.0, null, null)),
                 ),
                 SeasonView(
                     number = 1,
                     name = "Season 1",
                     episodes = listOf(
-                        EpisodeView(1, "Pilot", null, 8.0, null),
-                        EpisodeView(2, "Low Point", null, 6.0, null),
+                        EpisodeView(1, "Pilot", null, 8.0, null, null),
+                        EpisodeView(2, "Low Point", null, 6.0, null, null),
                     ),
                 ),
                 SeasonView(
                     number = 2,
                     name = "Season 2",
                     episodes = listOf(
-                        EpisodeView(1, "Opener", null, 9.0, null),
-                        EpisodeView(2, "Finale", null, 7.0, null),
+                        EpisodeView(1, "Opener", null, 9.0, null, null),
+                        EpisodeView(2, "Finale", null, 7.0, null, null),
                     ),
                 ),
             ),
@@ -47,8 +47,8 @@ class SeriesHighlightsBuilderTest {
         assertEquals(7.0, highlights.worstSeason!!.averageRating)
 
         assertEquals("S2E1", highlights.bestEpisode!!.code)
-        assertEquals(9.0, highlights.bestEpisode!!.imdbRating)
+        assertEquals(9.0, highlights.bestEpisode!!.rating)
         assertEquals("S1E2", highlights.worstEpisode!!.code)
-        assertEquals(6.0, highlights.worstEpisode!!.imdbRating)
+        assertEquals(6.0, highlights.worstEpisode!!.rating)
     }
 }

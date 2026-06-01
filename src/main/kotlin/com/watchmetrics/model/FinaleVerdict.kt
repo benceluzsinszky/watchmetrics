@@ -89,10 +89,14 @@ object FinaleVerdictEvaluator {
 
     private fun formatRatingSuffix(finale: SeriesFinaleHighlight): String {
         finale.lastEpisodeRating?.let { rating ->
-            return " · finale ★ ${formatRating(rating)}"
+            val source = finale.lastEpisodeRatingSource?.displayName.orEmpty()
+            val sourceSuffix = if (source.isBlank()) "" else " $source"
+            return " · finale ★ ${formatRating(rating)}$sourceSuffix"
         }
         finale.lastSeasonAverage?.let { average ->
-            return " · final season ★ ${formatRating(average)} avg"
+            val source = finale.lastSeasonAverageSource?.displayName.orEmpty()
+            val sourceSuffix = if (source.isBlank()) "" else " $source"
+            return " · final season ★ ${formatRating(average)} avg$sourceSuffix"
         }
         return ""
     }

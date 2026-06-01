@@ -22,7 +22,7 @@ alwaysApply: false
 - Flow: TMDB `external_ids.imdb_id` → OMDb season calls (1 per season)
 - Free tier: ~1,000 requests/day — cache in DB before scaling traffic
 
-Episode display prefers **IMDb only**; show `— IMDb` when unavailable (no TMDB fallback in UI).
+Episode display prefers **IMDb** from OMDb; falls back to TMDB `vote_average` when IMDb is missing. UI labels the source (`IMDb` / `TMDB`).
 
 ## Not yet integrated
 

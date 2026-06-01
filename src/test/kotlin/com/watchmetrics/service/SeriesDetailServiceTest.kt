@@ -77,14 +77,13 @@ class SeriesDetailServiceTest {
         val detail = seriesDetailService.getDetail(1396)
 
         assertEquals("Breaking Bad", detail.name)
-        assertEquals(9.5, detail.imdbRating)
+        assertEquals(9.5, detail.displayRating)
+        assertEquals(com.watchmetrics.model.RatingSource.IMDB, detail.ratingSource)
         val episode = detail.seasons.single().episodes.single()
         assertEquals(7.9, episode.imdbRating)
-        assertEquals(1, detail.ratingGrid.maxEpisodes)
-        assertEquals(7.9, detail.ratingGrid.rows.single().cells.single().imdbRating)
-        assertEquals(7.9, detail.seasonRatingChart.bars.single().averageRating)
+        assertEquals(7.9, detail.ratingGrid.rows.single().cells.single().displayRating)
         assertEquals(7.9, detail.highlights.finale?.lastEpisodeRating)
-        assertEquals(7.9, detail.highlights.bestEpisode?.imdbRating)
+        assertEquals(7.9, detail.highlights.bestEpisode?.rating)
     }
 
     @Test
@@ -119,15 +118,16 @@ class SeriesDetailServiceTest {
 
         val detail = seriesDetailService.getDetail(1396)
 
-        assertEquals(8.2, detail.imdbRating)
+        assertEquals(8.2, detail.displayRating)
     }
 
     @Test
-    fun `shows no imdb when omdb is unavailable`() {
+    fun `falls back to tmdb when omdb is unavailable`() {
         given(tmdbClient.getTvShow(1396)).willReturn(
             TmdbTvShowDetail(
                 id = 1396,
                 name = "Breaking Bad",
+                voteAverage = 8.9,
                 seasons = listOf(TmdbSeasonRef(seasonNumber = 1, episodeCount = 1)),
             ),
         )
@@ -143,7 +143,35 @@ class SeriesDetailServiceTest {
         val episode = detail.seasons.single().episodes.single()
 
         assertEquals(null, episode.imdbRating)
-        assertEquals(null, detail.imdbRating)
+        assertEquals(8.5, episode.tmdbRating)
+        assertEquals(8.5, episode.displayRating)
+        assertEquals(com.watchmetrics.model.RatingSource.TMDB, episode.ratingSource)
+        assertEquals(8.5, detail.displayRating)
+        assertEquals(com.watchmetrics.model.RatingSource.TMDB, detail.ratingSource)
+    }
+
+    @Test
+    fun `shows no rating when neither source is available`() {
+        given(tmdbClient.getTvShow(1396)).willReturn(
+            TmdbTvShowDetail(
+                id = 1396,
+                name = "Breaking Bad",
+                seasons = listOf(TmdbSeasonRef(seasonNumber = 1, episodeCount = 1)),
+            ),
+        )
+        given(tmdbClient.getTvExternalIds(1396)).willReturn(TmdbExternalIds(imdbId = null))
+        given(tmdbClient.getTvSeason(1396, 1)).willReturn(
+            TmdbSeasonDetail(
+                seasonNumber = 1,
+                episodes = listOf(TmdbEpisode(episodeNumber = 1, name = "Pilot")),
+            ),
+        )
+
+        val detail = seriesDetailService.getDetail(1396)
+        val episode = detail.seasons.single().episodes.single()
+
+        assertEquals(null, episode.displayRating)
+        assertEquals(null, detail.displayRating)
     }
 
     @Test

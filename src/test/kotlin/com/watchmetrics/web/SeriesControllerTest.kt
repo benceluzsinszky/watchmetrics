@@ -34,7 +34,7 @@ class SeriesControllerTest {
                 number = 1,
                 name = "Season 1",
                 episodes = listOf(
-                    EpisodeView(1, "Pilot", null, 7.9, "2008-01-20"),
+                    EpisodeView(1, "Pilot", null, 7.9, null, "2008-01-20"),
                 ),
             ),
         )
@@ -46,7 +46,8 @@ class SeriesControllerTest {
                 posterUrl = "https://image.tmdb.org/t/p/w342/poster.jpg",
                 firstAirYear = "2008",
                 status = "Ended",
-                imdbRating = 9.5,
+                displayRating = 9.5,
+                ratingSource = com.watchmetrics.model.RatingSource.IMDB,
                 rottenTomatoesScore = 96,
                 metacriticScore = null,
                 seasons = seasons,

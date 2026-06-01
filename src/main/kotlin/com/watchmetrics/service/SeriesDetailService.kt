@@ -2,9 +2,12 @@ package com.watchmetrics.service
 
 import com.watchmetrics.client.OmdbClient
 import com.watchmetrics.client.TmdbClient
+import com.watchmetrics.model.DisplayRating
 import com.watchmetrics.model.EpisodeView
 import com.watchmetrics.model.OmdbParsing
 import com.watchmetrics.model.RatingGridBuilder
+import com.watchmetrics.model.RatingResolver
+import com.watchmetrics.model.RatingSource
 import com.watchmetrics.model.SeasonRatingChartBuilder
 import com.watchmetrics.model.SeriesHighlightsBuilder
 import com.watchmetrics.model.SeasonView
@@ -57,13 +60,18 @@ class SeriesDetailService(
                                     name = episode.name,
                                     overview = episode.overview,
                                     imdbRating = omdbRatingsByEpisode[episode.episodeNumber],
+                                    tmdbRating = episode.voteAverage?.takeIf { it > 0 },
                                     airDate = episode.airDate,
                                 )
                             },
                     )
                 }
 
-            val imdbRating = resolveSeriesImdbRating(omdbShow?.imdbRating, seasons)
+            val (displayRating, ratingSource) = resolveShowRating(
+                omdbShowRating = omdbShow?.imdbRating,
+                showVoteAverage = show.voteAverage,
+                seasons = seasons,
+            )
 
             SeriesDetailView(
                 id = show.id,
@@ -72,7 +80,8 @@ class SeriesDetailService(
                 posterUrl = show.posterUrl,
                 firstAirYear = show.firstAirDate?.take(4),
                 status = show.status,
-                imdbRating = imdbRating,
+                displayRating = displayRating,
+                ratingSource = ratingSource,
                 rottenTomatoesScore = omdbShow?.rottenTomatoesScore,
                 metacriticScore = omdbShow?.metacriticScore,
                 seasons = seasons,
@@ -96,16 +105,22 @@ class SeriesDetailService(
     private fun seasonSortKey(seasonNumber: Int): Int =
         if (seasonNumber == 0) Int.MAX_VALUE else seasonNumber
 
-    private fun resolveSeriesImdbRating(omdbShowRating: String?, seasons: List<SeasonView>): Double? {
-        OmdbParsing.parseRating(omdbShowRating)?.let { return it }
+    private fun resolveShowRating(
+        omdbShowRating: String?,
+        showVoteAverage: Double?,
+        seasons: List<SeasonView>,
+    ): Pair<Double?, RatingSource?> {
+        OmdbParsing.parseRating(omdbShowRating)?.let { return it to RatingSource.IMDB }
 
         val episodeRatings = seasons.flatMap { season ->
-            season.episodes.mapNotNull { it.imdbRating }
+            season.episodes.mapNotNull { it.resolvedRating() }
         }
-        if (episodeRatings.isEmpty()) {
-            return null
+        if (episodeRatings.isNotEmpty()) {
+            return RatingResolver.average(episodeRatings)
         }
-        return episodeRatings.average()
+
+        showVoteAverage?.takeIf { it > 0 }?.let { return it to RatingSource.TMDB }
+        return null to null
     }
 }
 

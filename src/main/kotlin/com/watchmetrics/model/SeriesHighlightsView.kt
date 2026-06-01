@@ -16,18 +16,47 @@ data class SeriesFinaleHighlight(
     val lastSeasonNumber: Int,
     val lastSeasonName: String,
     val lastSeasonAverage: Double?,
+    val lastSeasonAverageSource: RatingSource?,
     val lastEpisodeNumber: Int,
     val lastEpisodeName: String,
     val lastEpisodeRating: Double?,
-)
+    val lastEpisodeRatingSource: RatingSource?,
+) {
+    val lastSeasonAverageLabel: String
+        get() = formatAverageLabel(lastSeasonAverage, lastSeasonAverageSource)
+
+    val lastEpisodeRatingLabel: String
+        get() = formatRatingLabel(lastEpisodeRating, lastEpisodeRatingSource)
+
+    private fun formatAverageLabel(rating: Double?, source: RatingSource?): String =
+        when {
+            rating != null && source != null -> "${RatingFormat.label(rating, source)} avg"
+            rating != null -> "★ ${RatingFormat.format(rating)} avg"
+            else -> "—"
+        }
+
+    private fun formatRatingLabel(rating: Double?, source: RatingSource?): String =
+        when {
+            rating != null && source != null -> RatingFormat.label(rating, source)
+            rating != null -> "★ ${RatingFormat.format(rating)}"
+            else -> "—"
+        }
+}
 
 data class RatedSeasonHighlight(
     val seasonNumber: Int,
     val seasonName: String,
     val averageRating: Double,
+    val ratingSource: RatingSource?,
 ) {
     val shortLabel: String
         get() = "S$seasonNumber"
+
+    val ratingLabel: String
+        get() = when (ratingSource) {
+            null -> "★ ${RatingFormat.format(averageRating)} avg"
+            else -> "${RatingFormat.label(averageRating, ratingSource)} avg"
+        }
 }
 
 data class RatedEpisodeHighlight(
@@ -35,10 +64,14 @@ data class RatedEpisodeHighlight(
     val seasonName: String,
     val episodeNumber: Int,
     val episodeName: String,
-    val imdbRating: Double,
+    val rating: Double,
+    val ratingSource: RatingSource,
 ) {
     val code: String
         get() = "S${seasonNumber}E$episodeNumber"
+
+    val ratingLabel: String
+        get() = RatingFormat.label(rating, ratingSource)
 }
 
 object SeriesHighlightsBuilder {
@@ -48,36 +81,44 @@ object SeriesHighlightsBuilder {
 
         val finale = lastSeason?.let { season ->
             val lastEpisode = season.episodes.maxByOrNull { it.number } ?: return@let null
+            val (seasonAverage, seasonSource) = seasonAverageWithSource(season)
+            val episodeRating = lastEpisode.resolvedRating()
             SeriesFinaleHighlight(
                 lastSeasonNumber = season.number,
                 lastSeasonName = season.name,
-                lastSeasonAverage = seasonAverage(season),
+                lastSeasonAverage = seasonAverage,
+                lastSeasonAverageSource = seasonSource,
                 lastEpisodeNumber = lastEpisode.number,
                 lastEpisodeName = lastEpisode.name,
-                lastEpisodeRating = lastEpisode.imdbRating?.takeIf { it > 0 },
+                lastEpisodeRating = episodeRating?.value,
+                lastEpisodeRatingSource = episodeRating?.source,
             )
         }
 
         val seasonAverages = regularSeasons.mapNotNull { season ->
-            seasonAverage(season)?.let { average ->
+            val (average, source) = seasonAverageWithSource(season)
+            average?.let {
                 RatedSeasonHighlight(
                     seasonNumber = season.number,
                     seasonName = season.name,
-                    averageRating = average,
+                    averageRating = it,
+                    ratingSource = source,
                 )
             }
         }
 
         val ratedEpisodes = regularSeasons.flatMap { season ->
             season.episodes.mapNotNull { episode ->
-                val rating = episode.imdbRating?.takeIf { it > 0 } ?: return@mapNotNull null
-                RatedEpisodeHighlight(
-                    seasonNumber = season.number,
-                    seasonName = season.name,
-                    episodeNumber = episode.number,
-                    episodeName = episode.name,
-                    imdbRating = rating,
-                )
+                episode.resolvedRating()?.let { rating ->
+                    RatedEpisodeHighlight(
+                        seasonNumber = season.number,
+                        seasonName = season.name,
+                        episodeNumber = episode.number,
+                        episodeName = episode.name,
+                        rating = rating.value,
+                        ratingSource = rating.source,
+                    )
+                }
             }
         }
 
@@ -96,11 +137,9 @@ object SeriesHighlightsBuilder {
         )
     }
 
-    private fun seasonAverage(season: SeasonView): Double? {
-        val ratings = season.episodes.mapNotNull { episode ->
-            episode.imdbRating?.takeIf { it > 0 }
-        }
-        return ratings.takeIf { it.isNotEmpty() }?.average()
+    private fun seasonAverageWithSource(season: SeasonView): Pair<Double?, RatingSource?> {
+        val ratings = season.episodes.mapNotNull { it.resolvedRating() }
+        return RatingResolver.average(ratings)
     }
 
     private fun seasonHighlightComparator(): Comparator<RatedSeasonHighlight> =
@@ -108,7 +147,7 @@ object SeriesHighlightsBuilder {
             .thenBy { it.seasonNumber }
 
     private fun episodeHighlightComparator(): Comparator<RatedEpisodeHighlight> =
-        compareBy<RatedEpisodeHighlight> { it.imdbRating }
+        compareBy<RatedEpisodeHighlight> { it.rating }
             .thenBy { it.seasonNumber }
             .thenBy { it.episodeNumber }
 }

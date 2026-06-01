@@ -16,19 +16,22 @@ object RatingGridBuilder {
                     val episode = episodesByNumber[episodeNumber]
                     if (episode == null) {
                         RatingGridCell(
+                            seasonLabel = season.name,
                             episodeNumber = null,
                             episodeName = null,
-                            imdbRating = null,
+                            displayRating = null,
+                            ratingSource = null,
                             heatmapColor = RatingColors.forImdb(null),
-                            seasonLabel = season.name,
                         )
                     } else {
+                        val rating = episode.resolvedRating()
                         RatingGridCell(
+                            seasonLabel = season.name,
                             episodeNumber = episode.number,
                             episodeName = episode.name,
-                            imdbRating = episode.imdbRating,
-                            heatmapColor = RatingColors.forImdb(episode.imdbRating),
-                            seasonLabel = season.name,
+                            displayRating = rating?.value,
+                            ratingSource = rating?.source,
+                            heatmapColor = RatingColors.forImdb(rating?.value),
                         )
                     }
                 },
