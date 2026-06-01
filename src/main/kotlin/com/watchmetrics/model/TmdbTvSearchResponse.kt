@@ -28,5 +28,5 @@ data class TmdbTvShowSummary(
     val voteAverage: Double? = null,
 ) {
     val posterUrl: String?
-        get() = posterPath?.let { "https://image.tmdb.org/t/p/w92$it" }
+        get() = TmdbImages.posterUrl(posterPath, "w92")
 }

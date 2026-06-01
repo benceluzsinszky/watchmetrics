@@ -13,7 +13,8 @@ Target platforms: **IMDb**, **Rotten Tomatoes**, **Metacritic**.
 **TMDB** — integrated for TV search and show metadata.
 
 - Env vars: `TMDB_ACCESS_TOKEN` (Bearer, preferred), `TMDB_API_KEY` (v3 fallback query param)
-- Client: `client/TmdbClient.kt` — `searchTv(query)`
+- Client: `client/TmdbClient.kt` — `searchTv`, `getTvShow`, `getTvSeason`
+- Detail flow: `SeriesDetailService` loads show + each season's episodes (TMDB `vote_average` per episode)
 - Config: `config/TmdbProperties.kt`, loaded from `.env` via `bootRun` or environment
 - Search endpoint: `GET /3/search/tv`
 

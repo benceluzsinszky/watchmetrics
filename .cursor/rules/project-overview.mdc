@@ -24,7 +24,7 @@ TV series analytics web app: search a show and see how ratings evolved episode-b
 - [x] Project scaffold (Spring Boot, Thymeleaf, HTMX CDN, Tailwind build)
 - [x] Home page placeholder at `/`
 - [x] Series search (TMDB + HTMX live search at `/search`)
-- [ ] Series detail page (ratings & charts)
+- [x] Series detail page — poster, description, TMDB episode ratings by season
 - [ ] Rating data ingestion (IMDb / RT / Metacritic)
 - [ ] Episode evolution charts
 

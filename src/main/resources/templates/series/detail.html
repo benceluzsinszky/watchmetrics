@@ -3,16 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="'Series ' + ${tmdbId}">Series</title>
+    <title th:text="${series.name}">Series</title>
     <link rel="stylesheet" th:href="@{/css/app.css}">
 </head>
 <body class="min-h-screen bg-slate-950 text-slate-100">
-<main class="mx-auto max-w-3xl px-6 py-12">
+<main class="mx-auto max-w-4xl px-6 py-12">
     <a href="/" class="text-sm text-slate-400 transition hover:text-slate-200">&larr; Back to search</a>
-    <h1 class="mt-6 text-3xl font-bold">Series detail</h1>
-    <p class="mt-4 text-slate-400">
-        TMDB ID <span th:text="${tmdbId}">0</span> — episode ratings and charts coming next.
-    </p>
+
+    <header class="mt-6 flex flex-col gap-6 sm:flex-row">
+        <img th:if="${series.posterUrl != null}"
+             th:src="${series.posterUrl}"
+             th:alt="${series.name + ' poster'}"
+             class="mx-auto h-72 w-48 shrink-0 rounded-xl object-cover bg-slate-800 shadow-lg sm:mx-0"
+             loading="lazy"/>
+        <div th:if="${series.posterUrl == null}"
+             class="mx-auto flex h-72 w-48 shrink-0 items-center justify-center rounded-xl bg-slate-800 text-sm text-slate-500 sm:mx-0">
+            No poster
+        </div>
+        <div class="min-w-0 flex-1">
+            <h1 class="text-3xl font-bold tracking-tight" th:text="${series.name}">Series name</h1>
+            <div class="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-slate-400">
+                <span th:if="${series.firstAirYear != null}" th:text="${series.firstAirYear}">2008</span>
+                <span th:if="${series.voteAverage != null}"
+                      class="text-amber-400/90"
+                      th:text="${'★ ' + #numbers.formatDecimal(series.voteAverage, 1, 1) + ' TMDB'}">★ 8.9 TMDB</span>
+            </div>
+            <p th:if="${series.overview != null and !#strings.isEmpty(series.overview)}"
+               class="mt-4 text-slate-300 leading-relaxed"
+               th:text="${series.overview}">Overview</p>
+            <p th:if="${series.overview == null or #strings.isEmpty(series.overview)}"
+               class="mt-4 text-slate-500 italic">No description available.</p>
+        </div>
+    </header>
+
+    <section class="mt-12">
+        <h2 class="text-xl font-semibold">Episodes by season</h2>
+        <p class="mt-1 text-sm text-slate-500">TMDB user score per episode (0–10). IMDb, Rotten Tomatoes, and Metacritic coming later.</p>
+
+        <p th:if="${#lists.isEmpty(series.seasons)}"
+           class="mt-6 rounded-lg border border-slate-800 bg-slate-900/50 px-4 py-6 text-center text-slate-400">
+            No season data available.
+        </p>
+
+        <div th:if="${!#lists.isEmpty(series.seasons)}" class="mt-6 space-y-4">
+            <details th:each="season, stat : ${series.seasons}"
+                     class="group rounded-xl border border-slate-800 bg-slate-900/40 open:bg-slate-900/60"
+                     th:open="${stat.index == 0}">
+                <summary class="cursor-pointer list-none px-4 py-3 font-medium text-slate-100 marker:content-none [&::-webkit-details-marker]:hidden">
+                    <span class="flex items-center justify-between gap-4">
+                        <span>
+                            <span th:text="${season.name}">Season 1</span>
+                            <span class="ml-2 text-sm font-normal text-slate-500"
+                                  th:text="${'(' + #lists.size(season.episodes) + ' episodes)'}">(7 episodes)</span>
+                        </span>
+                        <span class="text-slate-500 transition group-open:rotate-180">▾</span>
+                    </span>
+                </summary>
+                <ul class="divide-y divide-slate-800 border-t border-slate-800">
+                    <li th:each="episode : ${season.episodes}"
+                        class="flex flex-col gap-1 px-4 py-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
+                        <div class="min-w-0 flex-1">
+                            <p class="font-medium text-slate-100">
+                                <span class="text-slate-500" th:text="${'E' + episode.number}">E1</span>
+                                <span class="ml-2" th:text="${episode.name}">Pilot</span>
+                            </p>
+                            <p th:if="${episode.airDate != null}"
+                               class="mt-0.5 text-xs text-slate-500"
+                               th:text="${episode.airDate}">2008-01-20</p>
+                        </div>
+                        <p class="shrink-0 text-sm font-medium tabular-nums"
+                           th:classappend="${episode.hasRating} ? 'text-amber-400/90' : 'text-slate-600'"
+                           th:text="${episode.hasRating} ? ${'★ ' + #numbers.formatDecimal(episode.rating, 1, 1)} : '—'">
+                            ★ 8.5
+                        </p>
+                    </li>
+                </ul>
+            </details>
+        </div>
+    </section>
 </main>
 </body>
 </html>
