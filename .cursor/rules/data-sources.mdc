@@ -8,19 +8,24 @@ alwaysApply: false
 
 Target platforms: **IMDb**, **Rotten Tomatoes**, **Metacritic**.
 
-## Status
+## Catalog (search & metadata)
 
-Not yet integrated — update this file as APIs/clients are added.
+**TMDB** — integrated for TV search and show metadata.
 
-## Planned approach
+- Env vars: `TMDB_ACCESS_TOKEN` (Bearer, preferred), `TMDB_API_KEY` (v3 fallback query param)
+- Client: `client/TmdbClient.kt` — `searchTv(query)`
+- Config: `config/TmdbProperties.kt`, loaded from `.env` via `bootRun` or environment
+- Search endpoint: `GET /3/search/tv`
 
-- Isolate each source behind a client interface in `client/`
+## Rating sources (not yet integrated)
+
+- IMDb — link via TMDB `external_ids`; episode ratings TBD
+- Rotten Tomatoes — TBD
+- Metacritic — TBD
+
+## Conventions
+
+- Isolate each source behind a client in `client/`
 - Normalize scores into a common episode-level model in `model/`
-- Cache responses to avoid hammering external services
-- Document rate limits, auth requirements, and ToS constraints here when known
-
-## Open questions
-
-- Which APIs or data providers are available (official vs third-party)?
-- Episode-level granularity per source?
-- Search: by title, IMDB ID, or external catalog ID?
+- Cache responses in DB once a show is selected (not yet implemented)
+- Never commit API keys — use `.env` locally

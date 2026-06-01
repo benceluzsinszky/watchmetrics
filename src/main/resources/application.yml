@@ -3,6 +3,16 @@ spring:
     name: watchmetrics
   thymeleaf:
     cache: false
+  devtools:
+    restart:
+      enabled: true
+    livereload:
+      enabled: true
 
 server:
   port: 8080
+
+tmdb:
+  api-key: ${TMDB_API_KEY:}
+  access-token: ${TMDB_ACCESS_TOKEN:}
+  base-url: https://api.themoviedb.org/3
