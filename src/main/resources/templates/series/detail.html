@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="'Series ' + ${tmdbId}">Series</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body class="min-h-screen bg-slate-950 text-slate-100">
+<main class="mx-auto max-w-3xl px-6 py-12">
+    <a href="/" class="text-sm text-slate-400 transition hover:text-slate-200">&larr; Back to search</a>
+    <h1 class="mt-6 text-3xl font-bold">Series detail</h1>
+    <p class="mt-4 text-slate-400">
+        TMDB ID <span th:text="${tmdbId}">0</span> — episode ratings and charts coming next.
+    </p>
+</main>
+</body>
+</html>

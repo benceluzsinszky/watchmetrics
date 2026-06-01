@@ -1,0 +1,46 @@
+<div th:fragment="results" id="search-results" class="mt-8 w-full">
+    <p th:if="${error}" class="rounded-lg border border-red-500/40 bg-red-500/10 px-4 py-3 text-sm text-red-300" th:text="${error}">
+        Search error
+    </p>
+
+    <p th:if="${error == null and !#strings.isEmpty(query) and #lists.isEmpty(results)}"
+       class="rounded-lg border border-slate-800 bg-slate-900/50 px-4 py-6 text-center text-slate-400">
+        No shows found for &ldquo;<span th:text="${query}">query</span>&rdquo;.
+    </p>
+
+    <p th:if="${error == null and !#strings.isEmpty(query) and !#lists.isEmpty(results)}"
+       class="mb-4 text-sm text-slate-500">
+        <span th:text="${totalResults}">0</span> result(s) for &ldquo;<span th:text="${query}">query</span>&rdquo;
+    </p>
+
+    <ul th:if="${error == null and !#lists.isEmpty(results)}" class="space-y-3">
+        <li th:each="show : ${results}">
+            <a th:href="@{/series/{id}(id=${show.id})}"
+               class="flex gap-4 rounded-xl border border-slate-800 bg-slate-900/60 p-4 transition hover:border-slate-600 hover:bg-slate-900">
+                <img th:if="${show.posterUrl != null}"
+                     th:src="${show.posterUrl}"
+                     th:alt="${show.name + ' poster'}"
+                     class="h-24 w-16 shrink-0 rounded-md object-cover bg-slate-800"
+                     loading="lazy"/>
+                <div th:if="${show.posterUrl == null}"
+                     class="flex h-24 w-16 shrink-0 items-center justify-center rounded-md bg-slate-800 text-xs text-slate-500">
+                    No image
+                </div>
+                <div class="min-w-0 flex-1">
+                    <div class="flex flex-wrap items-baseline gap-x-2 gap-y-1">
+                        <h2 class="text-lg font-semibold text-slate-100" th:text="${show.name}">Show name</h2>
+                        <span th:if="${show.firstAirDate != null and !#strings.isEmpty(show.firstAirDate)}"
+                              class="text-sm text-slate-500"
+                              th:text="${#strings.substring(show.firstAirDate, 0, 4)}">2008</span>
+                        <span th:if="${show.voteAverage != null and show.voteAverage > 0}"
+                              class="text-sm text-amber-400/90"
+                              th:text="${'★ ' + #numbers.formatDecimal(show.voteAverage, 1, 1)}">★ 8.5</span>
+                    </div>
+                    <p th:if="${show.overview != null and !#strings.isEmpty(show.overview)}"
+                       class="mt-2 line-clamp-2 text-sm text-slate-400"
+                       th:text="${show.overview}">Overview</p>
+                </div>
+            </a>
+        </li>
+    </ul>
+</div>
